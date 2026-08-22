@@ -12,11 +12,16 @@
   <!-- Login -->
   <div id="loginView" class="login-view">
     <form id="loginForm" class="login-box">
+      <div class="lang-switch login-lang" id="langSwitchLogin">
+        <button type="button" data-lang="mn">MN</button>
+        <button type="button" data-lang="ko">KO</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
       <h1>🌿 ECO Admin</h1>
-      <p class="muted">관리자 로그인</p>
-      <input type="password" id="password" placeholder="비밀번호 / Password" autofocus />
+      <p class="muted" data-i18n="login_subtitle">관리자 로그인</p>
+      <input type="password" id="password" data-i18n-ph="login_pw_ph" placeholder="비밀번호 / Password" autofocus />
       <p class="form-error" id="loginError"></p>
-      <button type="submit" class="btn btn-primary">로그인</button>
+      <button type="submit" class="btn btn-primary" data-i18n="login_btn">로그인</button>
     </form>
   </div>
 
@@ -26,13 +31,18 @@
       <div class="container admin-header-inner">
         <span class="brand">🌿 ECO Admin</span>
         <div class="admin-tabs">
-          <button class="tab active" data-tab="rooms">객실 관리</button>
-          <button class="tab" data-tab="gallery">사이트 사진</button>
-          <button class="tab" data-tab="bookings">예약 관리 <span class="badge" id="pendingBadge" hidden></span></button>
+          <button class="tab active" data-tab="rooms" data-i18n="tab_rooms">객실 관리</button>
+          <button class="tab" data-tab="gallery" data-i18n="tab_gallery">사이트 사진</button>
+          <button class="tab" data-tab="bookings"><span data-i18n="tab_bookings">예약 관리</span> <span class="badge" id="pendingBadge" hidden></span></button>
         </div>
         <div class="admin-header-right">
-          <a href="/" target="_blank" class="muted-link">사이트 보기 ↗</a>
-          <button id="logoutBtn" class="btn btn-outline btn-sm">로그아웃</button>
+          <div class="lang-switch" id="langSwitch">
+            <button type="button" data-lang="mn">MN</button>
+            <button type="button" data-lang="ko">KO</button>
+            <button type="button" data-lang="en">EN</button>
+          </div>
+          <a href="/" target="_blank" class="muted-link" data-i18n="view_site">사이트 보기 ↗</a>
+          <button id="logoutBtn" class="btn btn-outline btn-sm" data-i18n="logout">로그아웃</button>
         </div>
       </div>
     </header>
@@ -41,8 +51,8 @@
       <!-- Rooms tab -->
       <section id="tab-rooms">
         <div class="tab-head">
-          <h2>객실 관리</h2>
-          <button class="btn btn-primary" id="addRoomBtn">+ 객실 추가</button>
+          <h2 data-i18n="rooms_title">객실 관리</h2>
+          <button class="btn btn-primary" id="addRoomBtn" data-i18n="add_room">+ 객실 추가</button>
         </div>
         <div id="roomsList" class="admin-rooms"></div>
       </section>
@@ -50,27 +60,25 @@
       <!-- Gallery tab -->
       <section id="tab-gallery" hidden>
         <div class="tab-head">
-          <h2>사이트 사진</h2>
+          <h2 data-i18n="gallery_title">사이트 사진</h2>
         </div>
-        <p class="muted" style="margin-top:-10px;margin-bottom:24px;">
+        <p class="muted" data-i18n="gallery_desc" style="margin-top:-10px;margin-bottom:24px;">
           메인(히어로)과 소개 섹션에 슬라이드로 표시될 사진입니다. 여러 장을 올리면 자동으로 넘어갑니다.
         </p>
 
         <div class="gallery-block">
-          <h3>메인 배경 (히어로) 슬라이드</h3>
+          <h3 data-i18n="gallery_hero">메인 배경 (히어로) 슬라이드</h3>
           <div class="photo-grid" id="heroGrid"></div>
-          <label class="upload-btn">
-            📷 사진 추가
+          <label class="upload-btn"><span data-i18n="add_photo">📷 사진 추가</span>
             <input type="file" id="heroInput" accept="image/*" multiple hidden />
           </label>
           <span class="muted gallery-status" id="heroStatus"></span>
         </div>
 
         <div class="gallery-block">
-          <h3>소개 섹션 슬라이드</h3>
+          <h3 data-i18n="gallery_about">소개 섹션 슬라이드</h3>
           <div class="photo-grid" id="aboutGrid"></div>
-          <label class="upload-btn">
-            📷 사진 추가
+          <label class="upload-btn"><span data-i18n="add_photo">📷 사진 추가</span>
             <input type="file" id="aboutInput" accept="image/*" multiple hidden />
           </label>
           <span class="muted gallery-status" id="aboutStatus"></span>
@@ -80,26 +88,26 @@
       <!-- Bookings tab -->
       <section id="tab-bookings" hidden>
         <div class="tab-head">
-          <h2>예약 관리</h2>
+          <h2 data-i18n="bookings_title">예약 관리</h2>
           <div class="filter" id="statusFilter">
-            <button class="chip active" data-f="all">전체</button>
-            <button class="chip" data-f="pending">대기</button>
-            <button class="chip" data-f="confirmed">확정</button>
-            <button class="chip" data-f="rejected">불가</button>
-            <button class="chip" data-f="cancelled">취소</button>
+            <button class="chip active" data-f="all" data-i18n="f_all">전체</button>
+            <button class="chip" data-f="pending" data-i18n="f_pending">대기</button>
+            <button class="chip" data-f="confirmed" data-i18n="f_confirmed">확정</button>
+            <button class="chip" data-f="rejected" data-i18n="f_rejected">불가</button>
+            <button class="chip" data-f="cancelled" data-i18n="f_cancelled">취소</button>
           </div>
         </div>
         <div class="table-wrap">
           <table class="bookings-table">
             <thead>
               <tr>
-                <th>상태</th><th>객실</th><th>이름</th><th>연락처</th>
-                <th>체크인</th><th>체크아웃</th><th>인원</th><th>메모</th><th>관리</th>
+                <th data-i18n="th_status">상태</th><th data-i18n="th_room">객실</th><th data-i18n="th_name">이름</th><th data-i18n="th_contact">연락처</th>
+                <th data-i18n="th_checkin">체크인</th><th data-i18n="th_checkout">체크아웃</th><th data-i18n="th_guests">인원</th><th data-i18n="th_memo">메모</th><th data-i18n="th_manage">관리</th>
               </tr>
             </thead>
             <tbody id="bookingsBody"></tbody>
           </table>
-          <p id="noBookings" class="muted empty" hidden>예약이 없습니다.</p>
+          <p id="noBookings" class="muted empty" data-i18n="bookings_empty" hidden>예약이 없습니다.</p>
         </div>
       </section>
     </main>
@@ -108,43 +116,42 @@
   <!-- Room editor modal -->
   <div class="modal" id="roomModal" hidden>
     <div class="modal-box room-editor">
-      <h3 id="roomModalTitle">객실 편집</h3>
+      <h3 id="roomModalTitle" data-i18n="modal_edit_title">객실 편집</h3>
       <form id="roomForm">
         <div class="lang-tabs" id="langTabs">
-          <button type="button" class="ltab active" data-l="mn">MN 몽골어</button>
-          <button type="button" class="ltab" data-l="ko">KO 한국어</button>
-          <button type="button" class="ltab" data-l="en">EN 영어</button>
+          <button type="button" class="ltab active" data-l="mn">🇲🇳 Монгол</button>
+          <button type="button" class="ltab" data-l="ko">🇰🇷 한국어</button>
+          <button type="button" class="ltab" data-l="en">🇬🇧 English</button>
         </div>
         <div class="lang-pane" data-lp="mn">
-          <label>이름 (MN)</label><input name="name_mn" />
-          <label>설명 (MN)</label><textarea name="desc_mn" rows="3"></textarea>
+          <label><span data-i18n="lbl_name">이름</span> (MN)</label><input name="name_mn" />
+          <label><span data-i18n="lbl_desc">설명</span> (MN)</label><textarea name="desc_mn" rows="3"></textarea>
         </div>
         <div class="lang-pane" data-lp="ko" hidden>
-          <label>이름 (KO)</label><input name="name_ko" />
-          <label>설명 (KO)</label><textarea name="desc_ko" rows="3"></textarea>
+          <label><span data-i18n="lbl_name">이름</span> (KO)</label><input name="name_ko" />
+          <label><span data-i18n="lbl_desc">설명</span> (KO)</label><textarea name="desc_ko" rows="3"></textarea>
         </div>
         <div class="lang-pane" data-lp="en" hidden>
-          <label>이름 (EN)</label><input name="name_en" />
-          <label>설명 (EN)</label><textarea name="desc_en" rows="3"></textarea>
+          <label><span data-i18n="lbl_name">이름</span> (EN)</label><input name="name_en" />
+          <label><span data-i18n="lbl_desc">설명</span> (EN)</label><textarea name="desc_en" rows="3"></textarea>
         </div>
 
         <div class="row">
           <div class="field">
-            <label>가격 (₮ / 박)</label>
+            <label data-i18n="lbl_price">가격 (₮ / 박)</label>
             <input type="number" name="price" min="0" />
           </div>
           <div class="field">
-            <label>최대 인원</label>
+            <label data-i18n="lbl_capacity">최대 인원</label>
             <input type="number" name="capacity" min="1" value="2" />
           </div>
         </div>
-        <label class="checkbox"><input type="checkbox" name="active" checked /> 사이트에 공개</label>
+        <label class="checkbox"><input type="checkbox" name="active" checked /> <span data-i18n="lbl_public">사이트에 공개</span></label>
 
         <div class="photos-section" id="photosSection" hidden>
-          <label>사진 (대표사진을 클릭해 지정)</label>
+          <label data-i18n="lbl_photos">사진 (대표사진을 클릭해 지정)</label>
           <div class="photo-grid" id="photoGrid"></div>
-          <label class="upload-btn">
-            📷 사진 추가
+          <label class="upload-btn"><span data-i18n="add_photo">📷 사진 추가</span>
             <input type="file" id="photoInput" accept="image/*" multiple hidden />
           </label>
           <span id="uploadStatus" class="muted"></span>
@@ -152,13 +159,15 @@
 
         <p class="form-error" id="roomError"></p>
         <div class="modal-actions">
-          <button type="button" class="btn btn-outline" id="roomCancel">취소</button>
-          <button type="submit" class="btn btn-primary">저장</button>
+          <button type="button" class="btn btn-outline" id="roomCancel" data-i18n="cancel">취소</button>
+          <button type="submit" class="btn btn-primary" data-i18n="save">저장</button>
         </div>
       </form>
     </div>
   </div>
 
+  <script src="/js/i18n.js"></script>
+  <script src="/js/admin-i18n.js"></script>
   <script src="/js/admin.js"></script>
 </body>
 </html>

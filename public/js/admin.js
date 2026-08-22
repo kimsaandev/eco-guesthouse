@@ -1,4 +1,4 @@
-// Admin dashboard: login, room CRUD + photo upload, booking management.
+// Admin dashboard: login, room CRUD + photo upload, booking management. (MN/KO/EN)
 (function () {
   let token = localStorage.getItem('adminToken') || '';
   let rooms = [];
@@ -12,6 +12,46 @@
       ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])
     );
   const money = (n) => '₮' + Number(n || 0).toLocaleString('en-US');
+
+  // ---- i18n ----
+  const lang = () => (window.getLang ? getLang() : 'ko');
+  function t(key, vars) {
+    const dict = (window.ADMIN_I18N && (ADMIN_I18N[lang()] || ADMIN_I18N.en)) || {};
+    let s = dict[key] != null ? dict[key] : (window.ADMIN_I18N && ADMIN_I18N.en[key]) || key;
+    if (vars) Object.keys(vars).forEach((k) => (s = s.replace('{' + k + '}', vars[k])));
+    return s;
+  }
+  function localizedName(nameObj) {
+    return (
+      (nameObj && (nameObj[lang()] || nameObj.ko || nameObj.mn || nameObj.en)) || t('room_noname')
+    );
+  }
+  function applyI18n() {
+    document.documentElement.lang = lang();
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+      el.textContent = t(el.getAttribute('data-i18n'));
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach((el) => {
+      el.placeholder = t(el.getAttribute('data-i18n-ph'));
+    });
+    document.querySelectorAll('.lang-switch button').forEach((b) =>
+      b.classList.toggle('active', b.dataset.lang === lang())
+    );
+    // re-render dynamic content in the new language
+    renderRooms();
+    renderBookings();
+    renderGallerySection('hero', 'heroGrid', 'heroStatus');
+    renderGallerySection('about', 'aboutGrid', 'aboutStatus');
+    if (!$('#roomModal').hidden) {
+      $('#roomModalTitle').textContent = editing ? t('modal_edit_title') : t('modal_new_title');
+    }
+  }
+  document.querySelectorAll('.lang-switch button').forEach((b) =>
+    b.addEventListener('click', () => {
+      if (window.setLang) setLang(b.dataset.lang);
+      applyI18n();
+    })
+  );
 
   async function api(path, opts = {}) {
     const headers = opts.headers || {};
@@ -62,10 +102,10 @@
         $('#password').value = '';
         showDash();
       } else {
-        $('#loginError').textContent = '비밀번호가 올바르지 않습니다.';
+        $('#loginError').textContent = t('login_err_wrong');
       }
     } catch {
-      $('#loginError').textContent = '오류가 발생했습니다.';
+      $('#loginError').textContent = t('login_err_generic');
     }
   });
 
@@ -75,15 +115,15 @@
   });
 
   // ---- Tabs ----
-  document.querySelectorAll('.tab').forEach((t) =>
-    t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach((tab) =>
+    tab.addEventListener('click', () => {
       document.querySelectorAll('.tab').forEach((x) => x.classList.remove('active'));
-      t.classList.add('active');
-      const tab = t.dataset.tab;
-      $('#tab-rooms').hidden = tab !== 'rooms';
-      $('#tab-gallery').hidden = tab !== 'gallery';
-      $('#tab-bookings').hidden = tab !== 'bookings';
-      if (tab === 'gallery') loadGallery();
+      tab.classList.add('active');
+      const name = tab.dataset.tab;
+      $('#tab-rooms').hidden = name !== 'rooms';
+      $('#tab-gallery').hidden = name !== 'gallery';
+      $('#tab-bookings').hidden = name !== 'bookings';
+      if (name === 'gallery') loadGallery();
     })
   );
 
@@ -98,29 +138,28 @@
 
   function renderRooms() {
     const list = $('#roomsList');
+    if (!list) return;
     if (!rooms.length) {
-      list.innerHTML = '<p class="muted empty">객실이 없습니다. "객실 추가"를 눌러 시작하세요.</p>';
+      list.innerHTML = `<p class="muted empty">${t('rooms_empty')}</p>`;
       return;
     }
     list.innerHTML = rooms
       .map((r) => {
         const cover = r.images && r.images.length ? r.images[r.cover || 0] : null;
         const thumb = cover ? `<img src="${cover}" alt="" />` : '🌿';
-        const name = r.name.ko || r.name.mn || r.name.en || '(이름 없음)';
+        const imgCount = (r.images || []).length;
         return `
         <div class="admin-room">
           <div class="thumb">${thumb}</div>
           <div class="info">
-            <h3>${esc(name)}
-              <span class="tag ${r.active ? 'on' : 'off'}">${r.active ? '공개' : '숨김'}</span>
+            <h3>${esc(localizedName(r.name))}
+              <span class="tag ${r.active ? 'on' : 'off'}">${r.active ? t('tag_public') : t('tag_hidden')}</span>
             </h3>
-            <div class="sub">${money(r.price)} / 박 · 최대 ${r.capacity}인 · 사진 ${
-          (r.images || []).length
-        }장</div>
+            <div class="sub">${money(r.price)} ${t('per_night')} · ${t('max_guests', { n: r.capacity })} · ${t('photos_count', { n: imgCount })}</div>
           </div>
           <div class="actions">
-            <button class="btn btn-outline btn-sm" data-edit="${r.id}">편집</button>
-            <button class="icon-btn danger" data-del="${r.id}">🗑</button>
+            <button class="btn btn-outline btn-sm" data-edit="${r.id}">${t('edit')}</button>
+            <button class="icon-btn danger" data-del="${r.id}" title="${t('del')}">🗑</button>
           </div>
         </div>`;
       })
@@ -136,7 +175,7 @@
 
   async function deleteRoom(id) {
     const r = rooms.find((x) => x.id === id);
-    if (!confirm(`"${(r && (r.name.ko || r.name.en)) || '객실'}" 을(를) 삭제할까요? 사진도 함께 삭제됩니다.`)) return;
+    if (!confirm(t('room_delete_confirm', { name: r ? localizedName(r.name) : '' }))) return;
     await api('/api/admin/rooms/' + id, { method: 'DELETE' });
     loadRooms();
   }
@@ -148,7 +187,7 @@
     const f = $('#roomForm');
     f.reset();
     $('#roomError').textContent = '';
-    $('#roomModalTitle').textContent = editing ? '객실 편집' : '새 객실 추가';
+    $('#roomModalTitle').textContent = editing ? t('modal_edit_title') : t('modal_new_title');
 
     if (editing) {
       f.name_mn.value = editing.name.mn || '';
@@ -160,12 +199,12 @@
       f.price.value = editing.price;
       f.capacity.value = editing.capacity;
       f.active.checked = !!editing.active;
-      $('#photosSection').hidden = false;
+      $('#photosSection').hidden = false; // photos editable for existing rooms
       renderPhotos();
     } else {
       f.capacity.value = 2;
       f.active.checked = true;
-      // photos only available after the room exists (needs an id to upload to)
+      // A new room must be saved first (needs an id) before photos can be uploaded.
       $('#photosSection').hidden = true;
     }
     setLangPane('mn');
@@ -176,11 +215,12 @@
     document.querySelectorAll('.ltab').forEach((t) => t.classList.toggle('active', t.dataset.l === l));
     document.querySelectorAll('.lang-pane').forEach((p) => (p.hidden = p.dataset.lp !== l));
   }
-  document.querySelectorAll('.ltab').forEach((t) =>
-    t.addEventListener('click', () => setLangPane(t.dataset.l))
+  document.querySelectorAll('.ltab').forEach((tab) =>
+    tab.addEventListener('click', () => setLangPane(tab.dataset.l))
   );
 
-  $('#roomCancel').addEventListener('click', () => ($('#roomModal').hidden = true));
+  function closeRoomModal() { $('#roomModal').hidden = true; }
+  $('#roomCancel').addEventListener('click', closeRoomModal);
 
   $('#roomForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -193,29 +233,19 @@
       active: f.active.checked,
     };
     if (!payload.name.mn && !payload.name.ko && !payload.name.en) {
-      $('#roomError').textContent = '이름을 하나 이상 입력하세요.';
+      $('#roomError').textContent = t('err_need_name');
       return;
     }
     try {
       if (editing) {
         await api('/api/admin/rooms/' + editing.id, { method: 'PUT', body: payload });
       } else {
-        const res = await api('/api/admin/rooms', { method: 'POST', body: payload });
-        editing = await res.json(); // now has an id -> allow photo upload
+        await api('/api/admin/rooms', { method: 'POST', body: payload });
       }
       await loadRooms();
-      editing = rooms.find((r) => r.id === (editing && editing.id));
-      if (editing) {
-        // keep modal open so user can add photos to a freshly created room
-        $('#photosSection').hidden = false;
-        renderPhotos();
-        $('#roomError').textContent = '';
-        flash('저장되었습니다. 사진을 추가할 수 있습니다.');
-      } else {
-        $('#roomModal').hidden = true;
-      }
+      closeRoomModal(); // save & close
     } catch {
-      $('#roomError').textContent = '저장 중 오류가 발생했습니다.';
+      $('#roomError').textContent = t('err_save');
     }
   });
 
@@ -225,7 +255,7 @@
     setTimeout(() => { if (s.textContent === msg) s.textContent = ''; }, 2500);
   }
 
-  // ---- Photos ----
+  // ---- Room photos (live edit for existing rooms) ----
   function renderPhotos() {
     if (!editing) return;
     const grid = $('#photoGrid');
@@ -234,7 +264,7 @@
       .map(
         (url, i) => `
       <div class="photo-item ${i === (editing.cover || 0) ? 'cover' : ''}" data-cover="${i}">
-        ${i === (editing.cover || 0) ? '<span class="cover-flag">대표</span>' : ''}
+        ${i === (editing.cover || 0) ? `<span class="cover-flag">${t('cover_flag')}</span>` : ''}
         <img src="${url}" alt="" />
         <button type="button" class="del" data-delimg="${esc(url)}">✕</button>
       </div>`
@@ -254,10 +284,9 @@
     grid.querySelectorAll('[data-delimg]').forEach((b) =>
       b.addEventListener('click', async (ev) => {
         ev.stopPropagation();
-        const url = b.dataset.delimg;
         const res = await api('/api/admin/rooms/' + editing.id + '/images', {
           method: 'DELETE',
-          body: { url },
+          body: { url: b.dataset.delimg },
         });
         editing = await res.json();
         renderPhotos();
@@ -270,18 +299,15 @@
     if (!editing || !e.target.files.length) return;
     const fd = new FormData();
     for (const file of e.target.files) fd.append('images', file);
-    flash('업로드 중…');
+    flash(t('uploading'));
     try {
-      const res = await api('/api/admin/rooms/' + editing.id + '/images', {
-        method: 'POST',
-        body: fd,
-      });
+      const res = await api('/api/admin/rooms/' + editing.id + '/images', { method: 'POST', body: fd });
       editing = await res.json();
       renderPhotos();
       loadRooms();
-      flash('사진이 추가되었습니다.');
+      flash(t('uploaded'));
     } catch {
-      flash('업로드 실패');
+      flash(t('upload_failed'));
     }
     e.target.value = '';
   });
@@ -305,7 +331,7 @@
     if (!grid) return;
     const imgs = gallery[section] || [];
     if (!imgs.length) {
-      grid.innerHTML = '<p class="muted" style="grid-column:1/-1;">아직 사진이 없습니다.</p>';
+      grid.innerHTML = `<p class="muted" style="grid-column:1/-1;">${t('gallery_empty')}</p>`;
       return;
     }
     grid.innerHTML = imgs
@@ -337,18 +363,15 @@
       const fd = new FormData();
       for (const file of e.target.files) fd.append('images', file);
       const status = document.getElementById(statusId);
-      status.textContent = '업로드 중…';
+      status.textContent = t('uploading');
       try {
-        const res = await api('/api/admin/gallery/' + section + '/images', {
-          method: 'POST',
-          body: fd,
-        });
+        const res = await api('/api/admin/gallery/' + section + '/images', { method: 'POST', body: fd });
         gallery = await res.json();
         renderGallerySection(section, gridId, statusId);
-        status.textContent = '추가되었습니다.';
+        status.textContent = t('uploaded');
         setTimeout(() => (status.textContent = ''), 2500);
       } catch {
-        status.textContent = '업로드 실패';
+        status.textContent = t('upload_failed');
       }
       e.target.value = '';
     });
@@ -365,21 +388,22 @@
     } catch {}
   }
 
-  const STATUS_LABEL = { pending: '대기', confirmed: '확정', rejected: '불가', cancelled: '취소' };
+  const statusLabel = (s) => t('st_' + s);
 
   function roomNameById(id) {
     const r = rooms.find((x) => x.id === id);
-    if (!r) return '(삭제된 객실)';
-    return r.name.ko || r.name.mn || r.name.en || '(이름 없음)';
+    if (!r) return t('room_deleted');
+    return localizedName(r.name);
   }
 
   function renderBookings() {
+    const body = $('#bookingsBody');
+    if (!body) return;
     const pending = bookings.filter((b) => b.status === 'pending').length;
     const badge = $('#pendingBadge');
     badge.hidden = pending === 0;
     badge.textContent = pending;
 
-    const body = $('#bookingsBody');
     const list =
       bookingFilter === 'all' ? bookings : bookings.filter((b) => b.status === bookingFilter);
     $('#noBookings').hidden = list.length !== 0;
@@ -388,7 +412,7 @@
       .map(
         (b) => `
       <tr>
-        <td><span class="status-pill status-${b.status}">${STATUS_LABEL[b.status]}</span></td>
+        <td><span class="status-pill status-${b.status}">${statusLabel(b.status)}</span></td>
         <td>${esc(roomNameById(b.roomId))}</td>
         <td>${esc(b.name)}</td>
         <td>${esc(b.phone)}${b.email ? '<br><small>' + esc(b.email) + '</small>' : ''}</td>
@@ -398,10 +422,10 @@
         <td class="msg">${esc(b.message)}</td>
         <td>
           <div class="row-actions">
-            ${b.status !== 'confirmed' ? `<button class="icon-btn ok" data-confirm="${b.id}" title="확정">✔ 확정</button>` : ''}
-            ${b.status !== 'rejected' ? `<button class="icon-btn warn" data-reject="${b.id}" title="불가(거절)">⊘ 불가</button>` : ''}
-            ${b.status !== 'cancelled' ? `<button class="icon-btn" data-cancel="${b.id}" title="취소">✖ 취소</button>` : ''}
-            <button class="icon-btn danger" data-delbk="${b.id}" title="삭제">🗑</button>
+            ${b.status !== 'confirmed' ? `<button class="icon-btn ok" data-confirm="${b.id}">${t('act_confirm')}</button>` : ''}
+            ${b.status !== 'rejected' ? `<button class="icon-btn warn" data-reject="${b.id}">${t('act_reject')}</button>` : ''}
+            ${b.status !== 'cancelled' ? `<button class="icon-btn" data-cancel="${b.id}">${t('act_cancel')}</button>` : ''}
+            <button class="icon-btn danger" data-delbk="${b.id}" title="${t('del')}">🗑</button>
           </div>
         </td>
       </tr>`
@@ -427,7 +451,7 @@
     loadBookings();
   }
   async function deleteBooking(id) {
-    if (!confirm('이 예약을 삭제할까요?')) return;
+    if (!confirm(t('booking_delete_confirm'))) return;
     await api('/api/admin/bookings/' + id, { method: 'DELETE' });
     loadBookings();
   }
@@ -442,6 +466,7 @@
   );
 
   // ---- Init ----
+  applyI18n();
   if (token) showDash();
   else showLogin();
 })();

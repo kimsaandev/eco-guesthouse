@@ -5,7 +5,8 @@ body.admin { background: var(--sand); }
 
 /* Login */
 .login-view { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-.login-box { background: #fff; padding: 40px 34px; border-radius: var(--radius); box-shadow: var(--shadow); width: 100%; max-width: 360px; text-align: center; }
+.login-box { position: relative; background: #fff; padding: 40px 34px; border-radius: var(--radius); box-shadow: var(--shadow); width: 100%; max-width: 360px; text-align: center; }
+.login-lang { position: absolute; top: 12px; right: 12px; }
 .login-box h1 { color: var(--green-dark); }
 .login-box .muted { color: var(--muted); margin-top: -.4em; }
 .login-box input { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 1rem; margin: 16px 0 4px; }
