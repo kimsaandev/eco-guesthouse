@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ECO Guest house and Cafe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header" id="top">
+    <div class="container header-inner">
+      <a href="#top" class="brand">🌿 ECO <span>Guest house &amp; Cafe</span></a>
+      <nav class="nav" id="nav">
+        <a href="#about" data-i18n="nav_about">Бидний тухай</a>
+        <a href="#cafe" data-i18n="nav_cafe">Кафе</a>
+        <a href="#rooms" data-i18n="nav_rooms">Өрөөнүүд</a>
+        <a href="#book" data-i18n="nav_book">Захиалга</a>
+        <a href="#contact" data-i18n="nav_contact">Холбоо барих</a>
+      </nav>
+      <div class="lang-switch" id="langSwitch">
+        <button data-lang="mn">MN</button>
+        <button data-lang="ko">KO</button>
+        <button data-lang="en">EN</button>
+      </div>
+      <button class="menu-toggle" id="menuToggle" aria-label="menu">☰</button>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-slides slideshow empty" id="heroSlides"></div>
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+      <h1 data-i18n="hero_title">ECO Guest house and Cafe</h1>
+      <p data-i18n="hero_sub">Тайван, ногоон орчинд амарч, амтат кофе эдлээрэй.</p>
+      <a href="#rooms" class="btn btn-primary" data-i18n="hero_cta">Өрөө захиалах</a>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="section">
+    <div class="container narrow">
+      <h2 data-i18n="about_title">Бидний тухай</h2>
+      <p class="lead" data-i18n="about_text"></p>
+      <div class="about-slideshow slideshow empty" id="aboutSlides"></div>
+    </div>
+  </section>
+
+  <!-- Cafe -->
+  <section id="cafe" class="section section-alt">
+    <div class="container narrow">
+      <h2 data-i18n="cafe_title">Кафе</h2>
+      <p class="lead" data-i18n="cafe_text"></p>
+    </div>
+  </section>
+
+  <!-- Rooms -->
+  <section id="rooms" class="section">
+    <div class="container">
+      <h2 data-i18n="rooms_title">Өрөөнүүд</h2>
+      <p class="section-sub" data-i18n="rooms_sub"></p>
+      <div class="rooms-grid" id="roomsGrid"></div>
+    </div>
+  </section>
+
+  <!-- Booking -->
+  <section id="book" class="section section-alt">
+    <div class="container narrow">
+      <h2 data-i18n="book_title">Захиалга илгээх</h2>
+      <p class="section-sub" data-i18n="book_sub"></p>
+      <form id="bookingForm" class="booking-form">
+        <div class="field">
+          <label data-i18n="f_room">Өрөө</label>
+          <select name="roomId" id="roomSelect" required></select>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label data-i18n="f_name">Нэр</label>
+            <input type="text" name="name" required />
+          </div>
+          <div class="field">
+            <label data-i18n="f_phone">Утас</label>
+            <input type="tel" name="phone" required />
+          </div>
+        </div>
+        <div class="field">
+          <label data-i18n="f_email">И-мэйл</label>
+          <input type="email" name="email" required />
+        </div>
+        <div class="field">
+          <label data-i18n="f_dates">Огноо сонгох</label>
+          <div class="date-summary">
+            <span data-i18n="f_checkin">Ирэх өдөр</span>: <b id="ciLabel">—</b>
+            <span class="ds-arrow">→</span>
+            <span data-i18n="f_checkout">Гарах өдөр</span>: <b id="coLabel">—</b>
+          </div>
+          <div id="calendar" class="calendar" aria-label="date picker"></div>
+          <div class="cal-legend">
+            <span><i class="lg lg-free"></i><span data-i18n="cal_free">Боломжтой</span></span>
+            <span><i class="lg lg-booked"></i><span data-i18n="cal_booked">Захиалагдсан</span></span>
+            <span><i class="lg lg-sel"></i><span data-i18n="cal_selected">Сонгосон</span></span>
+          </div>
+          <input type="hidden" name="checkIn" id="checkIn" />
+          <input type="hidden" name="checkOut" id="checkOut" />
+        </div>
+        <div class="field">
+          <label data-i18n="f_guests">Зочдын тоо</label>
+          <input type="number" name="guests" min="1" value="1" required />
+        </div>
+        <div class="field">
+          <label data-i18n="f_message">Нэмэлт хүсэлт</label>
+          <textarea name="message" rows="3"></textarea>
+        </div>
+        <p class="form-error" id="formError"></p>
+        <button type="submit" class="btn btn-primary" data-i18n="f_submit">Захиалга илгээх</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="section">
+    <div class="container narrow">
+      <h2 data-i18n="contact_title">Холбоо барих</h2>
+      <div class="contact-grid">
+        <div>
+          <p><strong data-i18n="contact_addr">Хаяг</strong><br />ECO Guest house and Cafe</p>
+          <p><strong data-i18n="contact_phone">Утас</strong><br />+976 ---- ----</p>
+          <p><strong data-i18n="contact_email">И-мэйл</strong><br />hello@ecoguesthouse.mn</p>
+          <p><a class="btn btn-outline" href="https://maps.app.goo.gl/Fbeei16eJxwsagoCA" target="_blank" rel="noopener">📍 Google Maps</a></p>
+        </div>
+        <div class="map-embed">
+          <iframe
+            title="map"
+            src="https://maps.google.com/maps?q=ECO%20Guest%20house%20and%20Cafe&output=embed"
+            loading="lazy"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year"></span> ECO Guest house and Cafe</p>
+      <p><a href="/admin.html">Admin</a></p>
+    </div>
+  </footer>
+
+  <!-- Success modal -->
+  <div class="modal" id="successModal" hidden>
+    <div class="modal-box">
+      <div class="modal-icon">✅</div>
+      <h3 data-i18n="success_title">Захиалга амжилттай илгээгдлээ!</h3>
+      <p data-i18n="success_text"></p>
+      <button class="btn btn-primary" id="modalClose" data-i18n="close">Хаах</button>
+    </div>
+  </div>
+
+  <script src="/js/i18n.js"></script>
+  <script src="/js/calendar.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin · ECO Guest house</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/admin.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠️</text></svg>" />
+</head>
+<body class="admin">
+  <!-- Login -->
+  <div id="loginView" class="login-view">
+    <form id="loginForm" class="login-box">
+      <h1>🌿 ECO Admin</h1>
+      <p class="muted">관리자 로그인</p>
+      <input type="password" id="password" placeholder="비밀번호 / Password" autofocus />
+      <p class="form-error" id="loginError"></p>
+      <button type="submit" class="btn btn-primary">로그인</button>
+    </form>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashView" hidden>
+    <header class="admin-header">
+      <div class="container admin-header-inner">
+        <span class="brand">🌿 ECO Admin</span>
+        <div class="admin-tabs">
+          <button class="tab active" data-tab="rooms">객실 관리</button>
+          <button class="tab" data-tab="gallery">사이트 사진</button>
+          <button class="tab" data-tab="bookings">예약 관리 <span class="badge" id="pendingBadge" hidden></span></button>
+        </div>
+        <div class="admin-header-right">
+          <a href="/" target="_blank" class="muted-link">사이트 보기 ↗</a>
+          <button id="logoutBtn" class="btn btn-outline btn-sm">로그아웃</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container admin-main">
+      <!-- Rooms tab -->
+      <section id="tab-rooms">
+        <div class="tab-head">
+          <h2>객실 관리</h2>
+          <button class="btn btn-primary" id="addRoomBtn">+ 객실 추가</button>
+        </div>
+        <div id="roomsList" class="admin-rooms"></div>
+      </section>
+
+      <!-- Gallery tab -->
+      <section id="tab-gallery" hidden>
+        <div class="tab-head">
+          <h2>사이트 사진</h2>
+        </div>
+        <p class="muted" style="margin-top:-10px;margin-bottom:24px;">
+          메인(히어로)과 소개 섹션에 슬라이드로 표시될 사진입니다. 여러 장을 올리면 자동으로 넘어갑니다.
+        </p>
+
+        <div class="gallery-block">
+          <h3>메인 배경 (히어로) 슬라이드</h3>
+          <div class="photo-grid" id="heroGrid"></div>
+          <label class="upload-btn">
+            📷 사진 추가
+            <input type="file" id="heroInput" accept="image/*" multiple hidden />
+          </label>
+          <span class="muted gallery-status" id="heroStatus"></span>
+        </div>
+
+        <div class="gallery-block">
+          <h3>소개 섹션 슬라이드</h3>
+          <div class="photo-grid" id="aboutGrid"></div>
+          <label class="upload-btn">
+            📷 사진 추가
+            <input type="file" id="aboutInput" accept="image/*" multiple hidden />
+          </label>
+          <span class="muted gallery-status" id="aboutStatus"></span>
+        </div>
+      </section>
+
+      <!-- Bookings tab -->
+      <section id="tab-bookings" hidden>
+        <div class="tab-head">
+          <h2>예약 관리</h2>
+          <div class="filter" id="statusFilter">
+            <button class="chip active" data-f="all">전체</button>
+            <button class="chip" data-f="pending">대기</button>
+            <button class="chip" data-f="confirmed">확정</button>
+            <button class="chip" data-f="rejected">불가</button>
+            <button class="chip" data-f="cancelled">취소</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="bookings-table">
+            <thead>
+              <tr>
+                <th>상태</th><th>객실</th><th>이름</th><th>연락처</th>
+                <th>체크인</th><th>체크아웃</th><th>인원</th><th>메모</th><th>관리</th>
+              </tr>
+            </thead>
+            <tbody id="bookingsBody"></tbody>
+          </table>
+          <p id="noBookings" class="muted empty" hidden>예약이 없습니다.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Room editor modal -->
+  <div class="modal" id="roomModal" hidden>
+    <div class="modal-box room-editor">
+      <h3 id="roomModalTitle">객실 편집</h3>
+      <form id="roomForm">
+        <div class="lang-tabs" id="langTabs">
+          <button type="button" class="ltab active" data-l="mn">MN 몽골어</button>
+          <button type="button" class="ltab" data-l="ko">KO 한국어</button>
+          <button type="button" class="ltab" data-l="en">EN 영어</button>
+        </div>
+        <div class="lang-pane" data-lp="mn">
+          <label>이름 (MN)</label><input name="name_mn" />
+          <label>설명 (MN)</label><textarea name="desc_mn" rows="3"></textarea>
+        </div>
+        <div class="lang-pane" data-lp="ko" hidden>
+          <label>이름 (KO)</label><input name="name_ko" />
+          <label>설명 (KO)</label><textarea name="desc_ko" rows="3"></textarea>
+        </div>
+        <div class="lang-pane" data-lp="en" hidden>
+          <label>이름 (EN)</label><input name="name_en" />
+          <label>설명 (EN)</label><textarea name="desc_en" rows="3"></textarea>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>가격 (₮ / 박)</label>
+            <input type="number" name="price" min="0" />
+          </div>
+          <div class="field">
+            <label>최대 인원</label>
+            <input type="number" name="capacity" min="1" value="2" />
+          </div>
+        </div>
+        <label class="checkbox"><input type="checkbox" name="active" checked /> 사이트에 공개</label>
+
+        <div class="photos-section" id="photosSection" hidden>
+          <label>사진 (대표사진을 클릭해 지정)</label>
+          <div class="photo-grid" id="photoGrid"></div>
+          <label class="upload-btn">
+            📷 사진 추가
+            <input type="file" id="photoInput" accept="image/*" multiple hidden />
+          </label>
+          <span id="uploadStatus" class="muted"></span>
+        </div>
+
+        <p class="form-error" id="roomError"></p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="roomCancel">취소</button>
+          <button type="submit" class="btn btn-primary">저장</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>

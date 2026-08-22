@@ -1,0 +1,106 @@
+/* Admin dashboard styles */
+body.admin { background: var(--sand); }
+
+.btn-sm { padding: 7px 14px; font-size: .88rem; }
+
+/* Login */
+.login-view { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.login-box { background: #fff; padding: 40px 34px; border-radius: var(--radius); box-shadow: var(--shadow); width: 100%; max-width: 360px; text-align: center; }
+.login-box h1 { color: var(--green-dark); }
+.login-box .muted { color: var(--muted); margin-top: -.4em; }
+.login-box input { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 1rem; margin: 16px 0 4px; }
+.login-box button { width: 100%; margin-top: 8px; }
+
+/* Header */
+.admin-header { background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 40; }
+.admin-header-inner { display: flex; align-items: center; gap: 18px; height: 62px; }
+.admin-header .brand { color: var(--green-dark); font-weight: 800; }
+.admin-tabs { display: flex; gap: 6px; margin-left: 10px; }
+.tab { background: none; border: none; padding: 9px 16px; border-radius: 10px; cursor: pointer; font-weight: 600; color: var(--muted); font-size: .95rem; }
+.tab.active { background: var(--green-light); color: var(--green-dark); }
+.badge { background: #d9534f; color: #fff; border-radius: 999px; padding: 1px 8px; font-size: .75rem; margin-left: 2px; }
+.admin-header-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+.muted-link { color: var(--muted); font-size: .9rem; }
+
+.admin-main { padding: 30px 20px 60px; }
+.tab-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; flex-wrap: wrap; gap: 12px; }
+.tab-head h2 { color: var(--green-dark); margin: 0; }
+
+/* Rooms list */
+.admin-rooms { display: grid; gap: 16px; }
+.admin-room {
+  background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px; display: flex; gap: 16px; align-items: center; box-shadow: var(--shadow);
+}
+.admin-room .thumb { width: 96px; height: 72px; border-radius: 10px; object-fit: cover; background: var(--green-light); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: var(--green); }
+.admin-room .thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+.admin-room .info { flex: 1; min-width: 0; }
+.admin-room .info h3 { margin: 0 0 4px; color: var(--ink); font-size: 1.05rem; }
+.admin-room .info .sub { color: var(--muted); font-size: .88rem; }
+.admin-room .tag { display: inline-block; font-size: .74rem; padding: 2px 9px; border-radius: 999px; margin-left: 6px; font-weight: 600; }
+.tag.on { background: #e4f5ea; color: #1f7a45; }
+.tag.off { background: #f0eeea; color: #8a8a8a; }
+.admin-room .actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+/* Bookings table */
+.table-wrap { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); overflow-x: auto; box-shadow: var(--shadow); }
+.bookings-table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+.bookings-table th, .bookings-table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.bookings-table th { background: var(--green-light); color: var(--green-dark); font-size: .82rem; text-transform: uppercase; letter-spacing: .03em; }
+.bookings-table td.msg { white-space: normal; max-width: 220px; color: var(--muted); font-size: .86rem; }
+.bookings-table tr:last-child td { border-bottom: none; }
+.status-pill { padding: 3px 11px; border-radius: 999px; font-size: .78rem; font-weight: 700; }
+.status-pending { background: #fff3d6; color: #9a6b00; }
+.status-confirmed { background: #e4f5ea; color: #1f7a45; }
+.status-rejected { background: #ede8f3; color: #6a4a9a; }
+.status-cancelled { background: #f3e2e2; color: #a33; }
+.row-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.icon-btn { border: 1px solid var(--border); background: #fff; border-radius: 8px; padding: 5px 9px; cursor: pointer; font-size: .82rem; white-space: nowrap; }
+.icon-btn:hover { background: var(--sand); }
+.icon-btn.ok:hover { background: #e4f5ea; border-color: #a9d9bd; }
+.icon-btn.warn:hover { background: #ede8f3; border-color: #c9b8e0; }
+.icon-btn.danger:hover { background: #fbeaea; border-color: #e3b7b7; }
+.empty { padding: 30px; text-align: center; }
+
+.filter, .chip { }
+.filter { display: flex; gap: 6px; }
+.chip { border: 1px solid var(--border); background: #fff; border-radius: 999px; padding: 6px 14px; cursor: pointer; font-size: .85rem; color: var(--muted); }
+.chip.active { background: var(--green); color: #fff; border-color: var(--green); }
+
+/* Room editor modal */
+.room-editor { max-width: 540px; text-align: left; width: 100%; max-height: 90vh; overflow-y: auto; }
+.room-editor h3 { color: var(--green-dark); }
+.room-editor label { display: block; font-weight: 600; font-size: .9rem; margin: 12px 0 5px; }
+.room-editor input[type=text], .room-editor input[type=number], .room-editor input:not([type]), .room-editor textarea {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 1rem; font-family: inherit;
+}
+.lang-tabs { display: flex; gap: 6px; margin: 8px 0 12px; }
+.ltab { border: 1px solid var(--border); background: #fff; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: .85rem; font-weight: 600; color: var(--muted); }
+.ltab.active { background: var(--green); color: #fff; border-color: var(--green); }
+.checkbox { display: flex !important; align-items: center; gap: 8px; margin: 14px 0; font-weight: 500 !important; }
+.checkbox input { width: auto; }
+
+.photos-section { margin-top: 8px; border-top: 1px solid var(--border); padding-top: 14px; }
+.photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; margin: 8px 0; }
+.photo-item { position: relative; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; border: 3px solid transparent; cursor: pointer; }
+.photo-item.cover { border-color: var(--green); }
+.photo-item img { width: 100%; height: 100%; object-fit: cover; }
+.photo-item .cover-flag { position: absolute; top: 3px; left: 3px; background: var(--green); color: #fff; font-size: .65rem; padding: 1px 6px; border-radius: 999px; }
+.photo-item .del { position: absolute; top: 3px; right: 3px; background: rgba(0,0,0,.6); color: #fff; border: none; border-radius: 6px; width: 22px; height: 22px; cursor: pointer; font-size: .8rem; line-height: 1; }
+.upload-btn { display: inline-block; background: var(--green-light); color: var(--green-dark); padding: 9px 16px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: .9rem; margin-top: 4px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+/* Gallery tab */
+.gallery-block {
+  background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 20px 22px; box-shadow: var(--shadow); margin-bottom: 22px;
+}
+.gallery-block h3 { color: var(--green-dark); margin: 0 0 14px; }
+.gallery-block .photo-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); margin-bottom: 14px; }
+.gallery-status { margin-left: 10px; }
+
+@media (max-width: 640px) {
+  .admin-room { flex-wrap: wrap; }
+  .admin-room .actions { width: 100%; }
+  .admin-tabs .tab { padding: 8px 10px; font-size: .85rem; }
+}

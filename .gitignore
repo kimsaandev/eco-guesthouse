@@ -1,0 +1,16 @@
+node_modules/
+
+# Editor / tooling local settings
+.claude/
+
+# Archives / build artifacts
+*.zip
+
+# Runtime data (guest bookings & room content) — keep local, don't commit
+data/bookings.json
+data/rooms.json
+data/gallery.json
+
+# Uploaded room photos
+public/uploads/*
+!public/uploads/.gitkeep
