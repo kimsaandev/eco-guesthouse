@@ -72,7 +72,7 @@ body.admin { background: var(--sand); }
 .room-editor { max-width: 540px; text-align: left; width: 100%; max-height: 90vh; overflow-y: auto; }
 .room-editor h3 { color: var(--green-dark); }
 .room-editor label { display: block; font-weight: 600; font-size: .9rem; margin: 12px 0 5px; }
-.room-editor input[type=text], .room-editor input[type=number], .room-editor input:not([type]), .room-editor textarea {
+.room-editor input[type=text], .room-editor input[type=number], .room-editor input[type=password], .room-editor input:not([type]), .room-editor textarea {
   width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 1rem; font-family: inherit;
 }
 .lang-tabs { display: flex; gap: 6px; margin: 8px 0 12px; }

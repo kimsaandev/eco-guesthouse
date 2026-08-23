@@ -114,6 +114,39 @@
     logout();
   });
 
+  // ---- Change password ----
+  $('#pwBtn').addEventListener('click', () => {
+    $('#pwForm').reset();
+    $('#pwError').textContent = '';
+    $('#pwModal').hidden = false;
+  });
+  $('#pwCancel').addEventListener('click', () => ($('#pwModal').hidden = true));
+  $('#pwForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const f = e.target;
+    const errEl = $('#pwError');
+    errEl.textContent = '';
+    const currentPassword = f.currentPassword.value;
+    const newPassword = f.newPassword.value;
+    if (newPassword.length < 4) { errEl.textContent = t('pw_err_weak'); return; }
+    if (newPassword !== f.confirmPassword.value) { errEl.textContent = t('pw_err_mismatch'); return; }
+    try {
+      const res = await api('/api/admin/password', {
+        method: 'POST',
+        body: { currentPassword, newPassword },
+      });
+      if (res.ok) {
+        $('#pwModal').hidden = true;
+        alert(t('pw_success'));
+      } else {
+        const j = await res.json().catch(() => ({}));
+        errEl.textContent = t(j.error === 'wrong_current' ? 'pw_err_current' : 'pw_err_weak');
+      }
+    } catch {
+      errEl.textContent = t('login_err_generic');
+    }
+  });
+
   // ---- Tabs ----
   document.querySelectorAll('.tab').forEach((tab) =>
     tab.addEventListener('click', () => {

@@ -23,6 +23,7 @@ const UPLOAD_DIR = process.env.UPLOAD_DIR || path.join(__dirname, 'public', 'upl
 const ROOMS_FILE = path.join(DATA_DIR, 'rooms.json');
 const BOOKINGS_FILE = path.join(DATA_DIR, 'bookings.json');
 const GALLERY_FILE = path.join(DATA_DIR, 'gallery.json');
+const SETTINGS_FILE = path.join(DATA_DIR, 'settings.json');
 
 // Ensure folders exist
 for (const dir of [DATA_DIR, UPLOAD_DIR]) {
@@ -43,6 +44,35 @@ function writeJson(file, data) {
 function id() {
   return crypto.randomBytes(6).toString('hex');
 }
+
+// ---- Admin password storage (hashed, persisted to the volume) -----------
+function hashPassword(pw, salt) {
+  salt = salt || crypto.randomBytes(16).toString('hex');
+  const hash = crypto.scryptSync(String(pw), salt, 64).toString('hex');
+  return { salt, hash };
+}
+function verifyPassword(pw, stored) {
+  if (!stored || !stored.salt || !stored.hash) return false;
+  const h = crypto.scryptSync(String(pw), stored.salt, 64).toString('hex');
+  const a = Buffer.from(h, 'hex');
+  const b = Buffer.from(stored.hash, 'hex');
+  return a.length === b.length && crypto.timingSafeEqual(a, b);
+}
+// Settings hold the admin password hash. Seeded from ADMIN_PASSWORD env on
+// first run; once the admin changes it in the dashboard, the stored value wins.
+function getSettings() {
+  let s = readJson(SETTINGS_FILE, null);
+  if (!s || !s.password) {
+    s = { password: hashPassword(ADMIN_PASSWORD) };
+    writeJson(SETTINGS_FILE, s);
+  }
+  return s;
+}
+function saveSettings(s) {
+  writeJson(SETTINGS_FILE, s);
+}
+getSettings(); // ensure settings file exists at startup
+
 // Map a stored image URL (/uploads/xxx.png) to its file path on disk.
 function uploadPathFromUrl(url) {
   return path.join(UPLOAD_DIR, path.basename(String(url)));
@@ -255,12 +285,31 @@ app.get('/api/rooms/:id/booked', (req, res) => {
 
 app.post('/api/admin/login', (req, res) => {
   const { password } = req.body || {};
-  if (password === ADMIN_PASSWORD) {
+  if (verifyPassword(password || '', getSettings().password)) {
     const token = id() + id();
     activeTokens.add(token);
     return res.json({ token });
   }
   res.status(401).json({ error: 'wrong_password' });
+});
+
+// Change the admin password (requires the current password)
+app.post('/api/admin/password', requireAdmin, (req, res) => {
+  const { currentPassword, newPassword } = req.body || {};
+  const settings = getSettings();
+  if (!verifyPassword(currentPassword || '', settings.password)) {
+    return res.status(400).json({ error: 'wrong_current' });
+  }
+  if (!newPassword || String(newPassword).length < 4) {
+    return res.status(400).json({ error: 'weak_password' });
+  }
+  settings.password = hashPassword(String(newPassword));
+  saveSettings(settings);
+  // Invalidate every other session; keep the current one logged in.
+  const current = (req.headers.authorization || '').slice(7);
+  activeTokens.clear();
+  activeTokens.add(current);
+  res.json({ ok: true });
 });
 
 app.post('/api/admin/logout', requireAdmin, (req, res) => {
@@ -431,5 +480,5 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`\nECO Guest house booking site running:`);
   console.log(`  Guests : http://localhost:${PORT}/`);
-  console.log(`  Admin  : http://localhost:${PORT}/admin.html  (password: ${ADMIN_PASSWORD})\n`);
+  console.log(`  Admin  : http://localhost:${PORT}/admin  (password: set via ADMIN_PASSWORD, changeable in the dashboard)\n`);
 });
