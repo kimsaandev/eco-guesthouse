@@ -142,10 +142,12 @@ function wrap(heading, bodyHtml) {
   </div>`;
 }
 
-async function send(to, subject, html) {
+async function send(to, subject, html, replyTo) {
   if (!transporter || !to) return;
   try {
-    await transporter.sendMail({ from: FROM, to, subject, html });
+    const msg = { from: FROM, to, subject, html };
+    if (replyTo) msg.replyTo = replyTo; // so a reply reaches the right person
+    await transporter.sendMail(msg);
     console.log(`[mail] sent "${subject}" -> ${to}`);
   } catch (err) {
     console.error(`[mail] FAILED "${subject}" -> ${to}:`, err.message);
@@ -165,7 +167,7 @@ async function sendBookingCreated(booking, roomNameObj) {
     booking,
     guestRoom
   )}`;
-  await send(booking.email, g.created.subject, wrap(g.created.heading, guestBody));
+  await send(booking.email, g.created.subject, wrap(g.created.heading, guestBody), ADMIN_EMAIL);
 
   // Admin (Korean)
   const adminBody = `
@@ -173,7 +175,7 @@ async function sendBookingCreated(booking, roomNameObj) {
     ${detailsTable(GUEST.ko.labels, booking, adminRoom)}
     ${booking.email ? `<p style="font-size:14px;color:#6b7a72;">예약자 이메일: ${esc(booking.email)}</p>` : ''}
     ${booking.message ? `<p style="font-size:14px;"><b>메모:</b> ${esc(booking.message)}</p>` : ''}`;
-  await send(ADMIN_EMAIL, `[신규 예약 신청] ${adminRoom} · ${booking.checkIn}~${booking.checkOut} · ${booking.name}`, wrap('신규 예약 신청', adminBody));
+  await send(ADMIN_EMAIL, `[신규 예약 신청] ${adminRoom} · ${booking.checkIn}~${booking.checkOut} · ${booking.name}`, wrap('신규 예약 신청', adminBody), booking.email);
 }
 
 // Status changed: notify guest (localized) + admin (copy).
@@ -189,13 +191,13 @@ async function sendStatusUpdate(booking, roomNameObj, status) {
     booking,
     guestRoom
   )}`;
-  await send(booking.email, g[status].subject, wrap(g[status].heading, guestBody));
+  await send(booking.email, g[status].subject, wrap(g[status].heading, guestBody), ADMIN_EMAIL);
 
   // Admin copy (Korean)
   const adminBody = `
     <p style="font-size:15px;line-height:1.6;">예약 상태가 <b>${STATUS_KO[status] || status}</b>(으)로 변경되었습니다.</p>
     ${detailsTable(GUEST.ko.labels, booking, adminRoom)}`;
-  await send(ADMIN_EMAIL, `[예약 ${STATUS_KO[status] || status}] ${adminRoom} · ${booking.checkIn}~${booking.checkOut} · ${booking.name}`, wrap(`예약 상태 변경: ${STATUS_KO[status] || status}`, adminBody));
+  await send(ADMIN_EMAIL, `[예약 ${STATUS_KO[status] || status}] ${adminRoom} · ${booking.checkIn}~${booking.checkOut} · ${booking.name}`, wrap(`예약 상태 변경: ${STATUS_KO[status] || status}`, adminBody), booking.email);
 }
 
 module.exports = { sendBookingCreated, sendStatusUpdate, mailEnabled: () => !!transporter };
