@@ -255,8 +255,16 @@
           invalid_dates: 'err_dates',
           too_many_guests: 'err_guests',
           invalid_email: 'err_email',
+          missing_fields: 'err_fields',
+          room_not_found: 'err_room_gone',
         };
         errEl.textContent = t(map[j.error] || 'err_generic');
+        // Room list may be stale (e.g. after a server redeploy) — refresh it.
+        if (j.error === 'room_not_found') {
+          await loadRooms();
+          if (calendar) calendar.reset();
+          applyI18n();
+        }
       }
     } catch {
       errEl.textContent = t('err_generic');
