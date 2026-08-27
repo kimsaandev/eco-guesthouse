@@ -2,14 +2,18 @@
 // If SMTP is not configured, emails are skipped gracefully (the app still works).
 const nodemailer = require('nodemailer');
 
-const {
-  SMTP_HOST = 'smtp.gmail.com',
-  SMTP_PORT = '465',
-  SMTP_USER,
-  SMTP_PASS,
-  MAIL_FROM,
-  ADMIN_EMAIL = 'wlstks7@gmail.com',
-} = process.env;
+// Trim env vars — a stray leading/trailing space (common copy-paste mistake)
+// in SMTP_HOST would otherwise break DNS resolution and silently kill email.
+const env = (k, dflt) => {
+  const v = process.env[k];
+  return (v == null ? dflt : String(v).trim()) || dflt;
+};
+const SMTP_HOST = env('SMTP_HOST', 'smtp.gmail.com');
+const SMTP_PORT = env('SMTP_PORT', '465');
+const SMTP_USER = env('SMTP_USER', '');
+const SMTP_PASS = process.env.SMTP_PASS ? String(process.env.SMTP_PASS).trim() : '';
+const MAIL_FROM = env('MAIL_FROM', '');
+const ADMIN_EMAIL = env('ADMIN_EMAIL', 'wlstks7@gmail.com');
 
 let transporter = null;
 if (SMTP_USER && SMTP_PASS) {
