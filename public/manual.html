@@ -1,17 +1,20 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>사용 매뉴얼 · ECO Guest house</title>
+  <title>Manual · ECO Guest house</title>
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>" />
   <style>
     body { background: var(--sand); }
-    .doc { max-width: 900px; margin: 0 auto; padding: 30px 20px 80px; }
-    .doc-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; }
-    .doc-head h1 { color: var(--green-dark); margin: 0; font-size: 1.6rem; }
-    .doc-head .links { display: flex; gap: 10px; }
+    .topbar { position: sticky; top: 0; z-index: 40; background: rgba(255,255,255,.96); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
+    .topbar-inner { max-width: 900px; margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .topbar .brand { font-weight: 800; color: var(--green-dark); }
+    .topbar .spacer { margin-left: auto; }
+    .topbar .links { display: flex; gap: 8px; }
+    .doc { max-width: 900px; margin: 0 auto; padding: 24px 20px 80px; }
+    .doc h1 { color: var(--green-dark); font-size: 1.6rem; margin: 6px 0 4px; }
     .doc-updated { color: var(--muted); font-size: .9rem; margin-bottom: 22px; }
     .toc { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 22px; box-shadow: var(--shadow); margin-bottom: 30px; }
     .toc h2 { font-size: 1rem; color: var(--green-dark); margin: 0 0 10px; }
@@ -19,8 +22,8 @@
     .toc li { margin: 4px 0; break-inside: avoid; }
     .toc a { color: var(--ink); }
     .toc a:hover { color: var(--green); }
-    .card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 26px; box-shadow: var(--shadow); margin-bottom: 22px; scroll-margin-top: 16px; }
-    .card h2 { color: var(--green-dark); font-size: 1.25rem; margin: 0 0 14px; display: flex; align-items: center; gap: 8px; }
+    .card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 26px; box-shadow: var(--shadow); margin-bottom: 22px; scroll-margin-top: 70px; }
+    .card h2 { color: var(--green-dark); font-size: 1.25rem; margin: 0 0 14px; }
     .card h3 { color: var(--ink); font-size: 1.05rem; margin: 18px 0 8px; }
     .card p, .card li { line-height: 1.7; }
     .card ol, .card ul { padding-left: 22px; }
@@ -34,207 +37,382 @@
     .warn { background: #fdf2e6; border-left: 4px solid #d98a3a; padding: 12px 16px; border-radius: 8px; margin: 14px 0; }
     kbd { background: #eee; border: 1px solid #ccc; border-radius: 5px; padding: 1px 7px; font-size: .85em; }
     code { background: #f0eee8; padding: 1px 6px; border-radius: 5px; font-size: .9em; }
-    table.env { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: .92rem; }
-    table.env th, table.env td { border: 1px solid var(--border); padding: 7px 10px; text-align: left; }
-    table.env th { background: var(--green-light); color: var(--green-dark); }
-    .backtop { position: fixed; right: 20px; bottom: 20px; background: var(--green); color: #fff; border-radius: 999px; padding: 10px 16px; font-weight: 600; box-shadow: var(--shadow); }
+    table.tbl { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: .92rem; }
+    table.tbl th, table.tbl td { border: 1px solid var(--border); padding: 7px 10px; text-align: left; }
+    table.tbl th { background: var(--green-light); color: var(--green-dark); }
+    [data-lang-block][hidden] { display: none; }
   </style>
 </head>
 <body>
-  <div class="doc">
-    <div class="doc-head">
-      <h1>📖 ECO Guest house 사용 매뉴얼</h1>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <span class="brand">📖 ECO Manual</span>
+      <div class="lang-switch" id="langSwitch">
+        <button type="button" data-lang="mn">MN</button>
+        <button type="button" data-lang="ko">KO</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+      <span class="spacer"></span>
       <div class="links">
-        <a class="btn btn-outline btn-sm" href="/" target="_blank">사이트 ↗</a>
-        <a class="btn btn-primary btn-sm" href="/admin" target="_blank">관리자 ↗</a>
+        <a class="btn btn-outline btn-sm" href="/" target="_blank">Site ↗</a>
+        <a class="btn btn-primary btn-sm" href="/admin" target="_blank">Admin ↗</a>
       </div>
     </div>
-    <p class="doc-updated">ECO Guest house and Cafe · 예약 사이트 운영 안내서</p>
-
-    <nav class="toc">
-      <h2>목차</h2>
-      <ol>
-        <li><a href="#intro">사이트 개요</a></li>
-        <li><a href="#guest">손님(사용자) 사용법</a></li>
-        <li><a href="#admin-login">관리자 로그인</a></li>
-        <li><a href="#admin-rooms">객실 관리</a></li>
-        <li><a href="#admin-photos">사이트 사진</a></li>
-        <li><a href="#admin-bookings">예약 관리</a></li>
-        <li><a href="#admin-settings">설정 (기본 언어)</a></li>
-        <li><a href="#admin-password">비밀번호 변경</a></li>
-        <li><a href="#email">이메일 알림</a></li>
-        <li><a href="#faq">문제 해결 / FAQ</a></li>
-      </ol>
-    </nav>
-
-    <!-- 개요 -->
-    <section class="card" id="intro">
-      <h2>🌿 사이트 개요</h2>
-      <p>ECO Guest house의 <strong>결제 없는 예약 사이트</strong>입니다. 손님은 객실을 보고 예약을 신청하고, 주인은 관리자 페이지에서 객실·사진·예약을 관리합니다.</p>
-      <ul>
-        <li><strong>손님 사이트</strong>: <code>/</code> (메인 주소)</li>
-        <li><strong>관리자 페이지</strong>: <code>/admin</code></li>
-        <li><strong>3개국어</strong>: 몽골어 / 한국어 / 영어 (우측 상단에서 전환)</li>
-        <li>예약 시 <strong>결제는 받지 않으며</strong>, 신청이 들어오면 주인이 확인 후 연락합니다.</li>
-      </ul>
-    </section>
-
-    <!-- 손님 -->
-    <section class="card" id="guest">
-      <h2>🧳 손님(사용자) 사용법</h2>
-      <h3>1. 예약하기</h3>
-      <ol>
-        <li>메인 화면에서 <strong>객실</strong>을 둘러보고, 원하는 방의 <strong>"이 객실 예약"</strong> 버튼을 누릅니다.</li>
-        <li>예약 폼에서 <strong>객실</strong>을 선택합니다.</li>
-        <li><strong>달력</strong>에서 체크인 → 체크아웃 날짜를 클릭합니다.
-          <ul>
-            <li>회색·취소선 날짜는 <strong>이미 예약됨</strong>이라 선택할 수 없습니다.</li>
-            <li>지난 날짜도 선택할 수 없습니다.</li>
-          </ul>
-        </li>
-        <li>이름·연락처·<strong>이메일(필수)</strong>·인원·(선택)방문 국가·요청사항을 입력합니다.</li>
-        <li><strong>"예약 요청 보내기"</strong> → "접수되었습니다" 팝업이 뜨고, 입력한 이메일로 <strong>확인 메일</strong>이 발송됩니다.</li>
-      </ol>
-      <div class="note">이메일은 예약자가 사이트에서 확인 메일을 받아야 하므로 <strong>필수 입력</strong>입니다.</div>
-
-      <h3>2. 내 예약 조회</h3>
-      <p>상단 메뉴 <strong>"예약 조회 / My booking"</strong> → 예약 시 입력한 <strong>이메일</strong>을 넣으면, 본인 예약 목록과 상태를 볼 수 있습니다.</p>
-
-      <h3>3. 언어 전환</h3>
-      <p>우측 상단 <strong>MN / KO / EN</strong> 버튼으로 언어를 바꿉니다. 한 번 고르면 그 브라우저에서는 계속 그 언어로 보입니다.</p>
-    </section>
-
-    <!-- 로그인 -->
-    <section class="card" id="admin-login">
-      <h2>🔑 관리자 로그인</h2>
-      <ol>
-        <li><code>/admin</code> 주소로 접속합니다.</li>
-        <li><strong>비밀번호</strong>를 입력하고 로그인합니다. (비밀번호는 주인만 알고 있어야 합니다.)</li>
-        <li>상단 탭: <strong>객실 관리 · 사이트 사진 · 예약 관리 · 설정</strong></li>
-      </ol>
-      <div class="note">관리자 화면도 우측 상단 <strong>MN/KO/EN</strong>으로 언어를 바꿀 수 있습니다. (이건 <em>관리자 본인이 보는</em> 언어입니다.)</div>
-    </section>
-
-    <!-- 객실 -->
-    <section class="card" id="admin-rooms">
-      <h2>🛏️ 객실 관리</h2>
-      <p><strong>객실 관리</strong> 탭에서 방을 추가·수정·삭제합니다.</p>
-      <h3>객실 추가 / 편집</h3>
-      <ol>
-        <li><strong>"+ 객실 추가"</strong> 또는 기존 방의 <strong>"편집"</strong>을 누릅니다.</li>
-        <li>언어 탭(🇲🇳/🇰🇷/🇬🇧)마다 <strong>이름·설명</strong>을 입력합니다. (한 언어만 넣어도 됩니다.)</li>
-        <li><strong>가격(₮/박)</strong>, <strong>최대 인원</strong>, <strong>사이트 공개</strong> 여부를 설정합니다.</li>
-        <li><strong>저장</strong>을 누르면 저장되고 창이 닫힙니다.</li>
-      </ol>
-      <h3>사진 추가</h3>
-      <ol>
-        <li>새 방은 <strong>먼저 저장</strong>한 뒤, 목록에서 그 방의 <strong>"편집"</strong>을 다시 엽니다.</li>
-        <li><strong>"📷 사진 추가"</strong>로 여러 장 업로드합니다.</li>
-        <li>사진을 클릭하면 <strong>대표사진</strong>으로 지정되고, ✕로 삭제합니다.</li>
-      </ol>
-      <div class="note"><strong>공개</strong>를 끄면 손님 사이트에 그 방이 안 보입니다(예: 수리 중인 방).</div>
-    </section>
-
-    <!-- 사진 -->
-    <section class="card" id="admin-photos">
-      <h2>🖼️ 사이트 사진</h2>
-      <p><strong>사이트 사진</strong> 탭에서 메인 화면의 슬라이드 사진을 관리합니다.</p>
-      <ul>
-        <li><strong>메인 배경(히어로) 슬라이드</strong> — 첫 화면 배경에서 넘어가는 사진들</li>
-        <li><strong>소개 섹션 슬라이드</strong> — "소개" 부분에 표시되는 사진들</li>
-      </ul>
-      <p>각 항목에서 <strong>"📷 사진 추가"</strong>로 여러 장 올리면 자동으로 넘어갑니다. ✕로 삭제합니다. 사진이 없으면 기본 배경만 보입니다.</p>
-    </section>
-
-    <!-- 예약 -->
-    <section class="card" id="admin-bookings">
-      <h2>📋 예약 관리</h2>
-      <p><strong>예약 관리</strong> 탭에서 들어온 예약을 확인하고 상태를 바꿉니다. 새 예약이 있으면 탭에 <strong>빨간 숫자</strong>가 표시됩니다.</p>
-      <h3>예약 상태</h3>
-      <ul>
-        <li><span class="tag t-pending">대기</span> 손님이 막 신청한 상태 (아직 미확정)</li>
-        <li><span class="tag t-confirmed">확정</span> 예약을 받아들임 → 손님에게 확정 메일 발송</li>
-        <li><span class="tag t-rejected">불가</span> 받을 수 없음(거절) → 손님에게 안내 메일, 날짜 다시 풀림</li>
-        <li><span class="tag t-cancelled">취소</span> 확정 후 취소 → 손님에게 취소 메일, 날짜 다시 풀림</li>
-      </ul>
-      <h3>처리 방법</h3>
-      <ol>
-        <li>각 예약 줄의 <strong>✔ 확정 / ⊘ 불가 / ✖ 취소</strong> 버튼으로 상태를 바꿉니다.</li>
-        <li>상태를 바꾸면 <strong>손님과 주인 모두에게 자동 이메일</strong>이 나갑니다.</li>
-        <li>🗑 버튼으로 예약을 완전히 삭제할 수 있습니다.</li>
-        <li>상단 필터(전체/대기/확정/불가/취소)로 골라볼 수 있습니다.</li>
-      </ol>
-      <div class="note"><strong>불가·취소</strong>된 예약의 날짜는 다시 예약 가능해집니다. <strong>대기·확정</strong>만 날짜를 잡아둡니다. 같은 방·겹치는 날짜는 자동으로 중복 예약이 차단됩니다.</div>
-    </section>
-
-    <!-- 설정 -->
-    <section class="card" id="admin-settings">
-      <h2>⚙️ 설정 — 기본 언어</h2>
-      <p><strong>설정</strong> 탭에서 <strong>손님 사이트 기본 언어</strong>를 정합니다.</p>
-      <ul>
-        <li>처음 방문한 손님(언어를 아직 안 고른 사람)에게 이 언어로 보여줍니다. (기본값: 영어)</li>
-        <li>🇲🇳 / 🇰🇷 / 🇬🇧 중 클릭하면 <strong>즉시 저장</strong>됩니다.</li>
-        <li>손님이 직접 언어를 바꾸면 그 손님에게는 그 선택이 우선됩니다.</li>
-      </ul>
-    </section>
-
-    <!-- 비번 -->
-    <section class="card" id="admin-password">
-      <h2>🔒 비밀번호 변경</h2>
-      <ol>
-        <li>관리자 우측 상단 <strong>"비밀번호"</strong> 버튼을 누릅니다.</li>
-        <li>현재 비밀번호 → 새 비밀번호(4자 이상) → 확인을 입력하고 저장합니다.</li>
-        <li>변경 후 다른 기기의 로그인은 자동으로 풀립니다(현재 창은 유지).</li>
-      </ol>
-      <div class="warn">비밀번호는 안전한 곳에 보관하세요. 잊어버리면 서버 설정(환경변수 <code>ADMIN_PASSWORD</code>)으로만 초기화할 수 있습니다.</div>
-    </section>
-
-    <!-- 이메일 -->
-    <section class="card" id="email">
-      <h2>✉️ 이메일 알림</h2>
-      <h3>언제, 누구에게 가나</h3>
-      <table class="env">
-        <tr><th>상황</th><th>예약자에게</th><th>주인에게</th></tr>
-        <tr><td>예약 신청</td><td>접수 확인 메일</td><td>신규 예약 알림</td></tr>
-        <tr><td>확정</td><td>확정 안내</td><td>사본</td></tr>
-        <tr><td>불가</td><td>불가 안내</td><td>사본</td></tr>
-        <tr><td>취소</td><td>취소 안내</td><td>사본</td></tr>
-      </table>
-      <ul>
-        <li>예약자 메일은 <strong>손님이 고른 언어</strong>로, 주인 메일은 한국어로 발송됩니다.</li>
-        <li>예약자가 확인 메일에 <strong>답장하면 주인에게</strong>, 주인이 알림에 답장하면 <strong>예약자에게</strong> 갑니다.</li>
-      </ul>
-      <h3>메일 테스트</h3>
-      <p>관리자 우측 상단 <strong>"메일 테스트"</strong> 버튼을 누르면 실제로 테스트 메일을 보내고, 성공/실패 사유를 바로 보여줍니다. 메일이 안 오면 이 버튼으로 먼저 확인하세요.</p>
-    </section>
-
-    <!-- FAQ -->
-    <section class="card" id="faq">
-      <h2>🛠️ 문제 해결 / 자주 묻는 질문</h2>
-
-      <h3>Q. 메일이 안 와요</h3>
-      <ol>
-        <li>관리자 <strong>"메일 테스트"</strong> 버튼을 눌러 결과를 확인합니다.</li>
-        <li>성공인데 안 보이면 <strong>스팸함</strong>을 확인하세요.</li>
-        <li>실패 메시지가 뜨면 이메일 설정(발송 계정/비밀번호)을 점검해야 합니다.</li>
-      </ol>
-
-      <h3>Q. 예약·사진·설정이 사라져요</h3>
-      <p>서버의 <strong>영구 저장소(볼륨)</strong>가 연결돼 있어야 재배포 후에도 데이터가 유지됩니다. 데이터가 초기화된다면 운영자(개발자)에게 볼륨 설정을 확인 요청하세요.</p>
-
-      <h3>Q. 손님이 "오류가 발생했습니다"를 봐요</h3>
-      <p>대개 화면을 오래 열어둔 뒤 생긴 일시적 문제입니다. <strong>페이지 새로고침</strong>(<kbd>Ctrl</kbd>+<kbd>F5</kbd>) 후 다시 시도하면 됩니다.</p>
-
-      <h3>Q. 기본 언어가 영어인데 왜 나는 한국어로 보이나요?</h3>
-      <p>이전에 그 브라우저에서 한국어를 골랐기 때문입니다. 손님의 선택이 기본값보다 우선합니다. 기본값 확인은 <strong>시크릿 창</strong>으로 하세요.</p>
-
-      <h3>Q. 연락처·주소를 바꾸려면?</h3>
-      <p>사이트 하단 "오시는 길" 영역의 정보 수정은 운영자(개발자)에게 요청하세요.</p>
-    </section>
-
-    <p style="text-align:center;color:var(--muted);font-size:.9rem;">문의는 사이트 운영자에게 연락하세요.</p>
   </div>
 
-  <a href="#" class="backtop">↑ 위로</a>
+  <div class="doc">
+    <!-- ==================== ENGLISH ==================== -->
+    <div data-lang-block="en">
+      <h1>📖 ECO Guest house — User Manual</h1>
+      <p class="doc-updated">Operating guide for the ECO Guest house booking site</p>
+      <nav class="toc"><h2>Contents</h2><ol>
+        <li><a href="#en-intro">Overview</a></li>
+        <li><a href="#en-guest">For guests</a></li>
+        <li><a href="#en-login">Admin login</a></li>
+        <li><a href="#en-rooms">Managing rooms</a></li>
+        <li><a href="#en-photos">Site photos</a></li>
+        <li><a href="#en-bookings">Managing bookings</a></li>
+        <li><a href="#en-settings">Settings (language)</a></li>
+        <li><a href="#en-password">Password</a></li>
+        <li><a href="#en-email">Email notifications</a></li>
+        <li><a href="#en-faq">Troubleshooting / FAQ</a></li>
+      </ol></nav>
+
+      <section class="card" id="en-intro"><h2>🌿 Overview</h2>
+        <p>This is the <strong>no-payment booking site</strong> for ECO Guest house. Guests browse rooms and request a booking; the owner manages rooms, photos and bookings from the admin page.</p>
+        <ul>
+          <li><strong>Guest site</strong>: <code>/</code></li>
+          <li><strong>Admin page</strong>: <code>/admin</code></li>
+          <li><strong>3 languages</strong>: Mongolian / Korean / English (top-right switch)</li>
+          <li>No payment is taken — after a request comes in, the owner confirms and contacts the guest.</li>
+        </ul></section>
+
+      <section class="card" id="en-guest"><h2>🧳 For guests</h2>
+        <h3>1. Making a booking</h3>
+        <ol>
+          <li>Browse rooms and click <strong>"Book this room"</strong>.</li>
+          <li>Select the room in the form.</li>
+          <li>On the <strong>calendar</strong>, click check-in then check-out.
+            <ul><li>Grey / struck-through dates are <strong>already booked</strong>.</li><li>Past dates can't be chosen.</li></ul></li>
+          <li>Enter name, phone, <strong>email (required)</strong>, guests, optional country and requests.</li>
+          <li><strong>"Send booking request"</strong> → a confirmation email is sent to that address.</li>
+        </ol>
+        <div class="note">Email is required because the guest receives a confirmation email.</div>
+        <h3>2. Look up my booking</h3>
+        <p>Top menu <strong>"My booking"</strong> → enter the email you used to see your bookings and their status.</p>
+        <h3>3. Language</h3>
+        <p>Use <strong>MN / KO / EN</strong> at the top-right. Your choice is remembered on that browser.</p></section>
+
+      <section class="card" id="en-login"><h2>🔑 Admin login</h2>
+        <ol><li>Go to <code>/admin</code>.</li><li>Enter the <strong>password</strong> and log in.</li><li>Tabs: <strong>Rooms · Site photos · Bookings · Settings</strong></li></ol>
+        <div class="note">The admin screen also has MN/KO/EN (this is the language <em>you</em> see).</div></section>
+
+      <section class="card" id="en-rooms"><h2>🛏️ Managing rooms</h2>
+        <h3>Add / edit a room</h3>
+        <ol>
+          <li>Click <strong>"+ Add room"</strong> or <strong>"Edit"</strong> on a room.</li>
+          <li>Per language tab (🇲🇳/🇰🇷/🇬🇧) enter <strong>name & description</strong> (one language is enough).</li>
+          <li>Set <strong>price (₮/night)</strong>, <strong>max guests</strong>, and <strong>visibility</strong>.</li>
+          <li><strong>Save</strong> — it saves and closes.</li>
+        </ol>
+        <h3>Photos</h3>
+        <ol>
+          <li>For a new room, <strong>save first</strong>, then reopen it with <strong>"Edit"</strong>.</li>
+          <li>Use <strong>"Add photo"</strong> to upload several. Click a photo to set the <strong>cover</strong>; ✕ deletes it.</li>
+        </ol>
+        <div class="note">Turning <strong>visibility</strong> off hides the room from the guest site.</div></section>
+
+      <section class="card" id="en-photos"><h2>🖼️ Site photos</h2>
+        <p>The <strong>Site photos</strong> tab controls the home-page slideshows.</p>
+        <ul><li><strong>Hero slideshow</strong> — background photos on the first screen</li><li><strong>About slideshow</strong> — photos in the "About" section</li></ul>
+        <p>Use <strong>"Add photo"</strong> to upload several; they auto-rotate. ✕ deletes. No photos = plain background.</p></section>
+
+      <section class="card" id="en-bookings"><h2>📋 Managing bookings</h2>
+        <p>The <strong>Bookings</strong> tab shows incoming requests. A <strong>red number</strong> on the tab means new requests.</p>
+        <h3>Statuses</h3>
+        <ul>
+          <li><span class="tag t-pending">Pending</span> just requested, not decided</li>
+          <li><span class="tag t-confirmed">Confirmed</span> accepted → guest gets a confirmation email</li>
+          <li><span class="tag t-rejected">Rejected</span> can't accept → guest is notified, dates freed</li>
+          <li><span class="tag t-cancelled">Cancelled</span> cancelled after confirming → guest notified, dates freed</li>
+        </ul>
+        <h3>How to handle</h3>
+        <ol>
+          <li>Use <strong>✔ Confirm / ⊘ Reject / ✖ Cancel</strong> on each row.</li>
+          <li>Changing status <strong>emails both guest and owner</strong> automatically.</li>
+          <li>🗑 deletes the booking. Filter by status at the top.</li>
+        </ol>
+        <div class="note"><strong>Rejected / Cancelled</strong> free the dates again; only <strong>Pending / Confirmed</strong> hold them. Overlapping dates on the same room are blocked automatically.</div></section>
+
+      <section class="card" id="en-settings"><h2>⚙️ Settings — default language</h2>
+        <p>The <strong>Settings</strong> tab sets the <strong>default site language</strong> for first-time visitors (default: English). Click 🇲🇳/🇰🇷/🇬🇧 to save instantly. A guest's own choice still wins.</p></section>
+
+      <section class="card" id="en-password"><h2>🔒 Password</h2>
+        <ol><li>Open the <strong>"···"</strong> menu → <strong>Password</strong>.</li><li>Current → new (4+ chars) → confirm, then save.</li><li>Other devices are logged out; your current window stays.</li></ol>
+        <div class="warn">Keep the password safe. If lost, it can only be reset via the server variable <code>ADMIN_PASSWORD</code>.</div></section>
+
+      <section class="card" id="en-email"><h2>✉️ Email notifications</h2>
+        <table class="tbl"><tr><th>Event</th><th>To guest</th><th>To owner</th></tr>
+          <tr><td>New request</td><td>Received</td><td>New booking</td></tr>
+          <tr><td>Confirmed</td><td>Confirmation</td><td>Copy</td></tr>
+          <tr><td>Rejected</td><td>Notice</td><td>Copy</td></tr>
+          <tr><td>Cancelled</td><td>Notice</td><td>Copy</td></tr></table>
+        <ul><li>Guest emails use the <strong>guest's language</strong>; owner emails are in Korean.</li>
+          <li>A guest's <strong>reply goes to the owner</strong>; the owner's reply goes to the guest.</li></ul>
+        <h3>Email test</h3>
+        <p>The <strong>"···" menu → Email test</strong> sends a real test and shows success or the exact error. Check here first if email isn't arriving.</p></section>
+
+      <section class="card" id="en-faq"><h2>🛠️ Troubleshooting / FAQ</h2>
+        <h3>Email doesn't arrive</h3>
+        <ol><li>Use <strong>Email test</strong> and read the result.</li><li>If it says success, check the <strong>spam folder</strong>.</li><li>If it fails, the sending account/password needs checking.</li></ol>
+        <h3>Data disappears (bookings/photos/settings)</h3>
+        <p>The server's <strong>persistent volume</strong> must be attached so data survives redeploys. If data resets, ask your operator to check the volume.</p>
+        <h3>A guest sees "Something went wrong"</h3>
+        <p>Usually a stale page. <strong>Refresh</strong> (<kbd>Ctrl</kbd>+<kbd>F5</kbd>) and try again.</p>
+        <h3>Default is English but I see Korean</h3>
+        <p>That browser previously chose Korean; a visitor's choice wins. Test the default in a <strong>private window</strong>.</p></section>
+    </div>
+
+    <!-- ==================== 한국어 ==================== -->
+    <div data-lang-block="ko" hidden>
+      <h1>📖 ECO Guest house 사용 매뉴얼</h1>
+      <p class="doc-updated">ECO Guest house 예약 사이트 운영 안내서</p>
+      <nav class="toc"><h2>목차</h2><ol>
+        <li><a href="#ko-intro">사이트 개요</a></li>
+        <li><a href="#ko-guest">손님 사용법</a></li>
+        <li><a href="#ko-login">관리자 로그인</a></li>
+        <li><a href="#ko-rooms">객실 관리</a></li>
+        <li><a href="#ko-photos">사이트 사진</a></li>
+        <li><a href="#ko-bookings">예약 관리</a></li>
+        <li><a href="#ko-settings">설정 (기본 언어)</a></li>
+        <li><a href="#ko-password">비밀번호</a></li>
+        <li><a href="#ko-email">이메일 알림</a></li>
+        <li><a href="#ko-faq">문제 해결 / FAQ</a></li>
+      </ol></nav>
+
+      <section class="card" id="ko-intro"><h2>🌿 사이트 개요</h2>
+        <p>ECO Guest house의 <strong>결제 없는 예약 사이트</strong>입니다. 손님은 객실을 보고 예약을 신청하고, 주인은 관리자에서 객실·사진·예약을 관리합니다.</p>
+        <ul><li><strong>손님 사이트</strong>: <code>/</code></li><li><strong>관리자</strong>: <code>/admin</code></li>
+          <li><strong>3개국어</strong>: 몽골어 / 한국어 / 영어 (우측 상단 전환)</li>
+          <li>결제는 받지 않으며, 신청이 들어오면 주인이 확인 후 연락합니다.</li></ul></section>
+
+      <section class="card" id="ko-guest"><h2>🧳 손님 사용법</h2>
+        <h3>1. 예약하기</h3>
+        <ol>
+          <li>객실을 보고 <strong>"이 객실 예약"</strong>을 누릅니다.</li>
+          <li>예약 폼에서 <strong>객실</strong>을 선택합니다.</li>
+          <li><strong>달력</strong>에서 체크인 → 체크아웃을 클릭합니다.
+            <ul><li>회색·취소선 날짜는 <strong>이미 예약됨</strong>입니다.</li><li>지난 날짜는 선택할 수 없습니다.</li></ul></li>
+          <li>이름·연락처·<strong>이메일(필수)</strong>·인원·(선택)국가·요청을 입력합니다.</li>
+          <li><strong>"예약 요청 보내기"</strong> → 입력한 이메일로 확인 메일이 발송됩니다.</li>
+        </ol>
+        <div class="note">예약자가 확인 메일을 받아야 하므로 이메일은 <strong>필수</strong>입니다.</div>
+        <h3>2. 내 예약 조회</h3>
+        <p>상단 메뉴 <strong>"예약 조회"</strong> → 예약 시 입력한 <strong>이메일</strong>로 예약과 상태를 확인합니다.</p>
+        <h3>3. 언어 전환</h3>
+        <p>우측 상단 <strong>MN / KO / EN</strong>. 한 번 고르면 그 브라우저에서 유지됩니다.</p></section>
+
+      <section class="card" id="ko-login"><h2>🔑 관리자 로그인</h2>
+        <ol><li><code>/admin</code> 접속</li><li><strong>비밀번호</strong> 입력 후 로그인</li><li>탭: <strong>객실 관리 · 사이트 사진 · 예약 관리 · 설정</strong></li></ol>
+        <div class="note">관리자 화면도 MN/KO/EN으로 바꿀 수 있습니다 (관리자 <em>본인이 보는</em> 언어).</div></section>
+
+      <section class="card" id="ko-rooms"><h2>🛏️ 객실 관리</h2>
+        <h3>객실 추가 / 편집</h3>
+        <ol>
+          <li><strong>"+ 객실 추가"</strong> 또는 <strong>"편집"</strong>을 누릅니다.</li>
+          <li>언어 탭(🇲🇳/🇰🇷/🇬🇧)마다 <strong>이름·설명</strong>을 입력합니다(한 언어만 넣어도 됨).</li>
+          <li><strong>가격(₮/박)</strong>·<strong>최대 인원</strong>·<strong>공개 여부</strong>를 설정합니다.</li>
+          <li><strong>저장</strong>하면 저장되고 창이 닫힙니다.</li>
+        </ol>
+        <h3>사진 추가</h3>
+        <ol><li>새 방은 <strong>먼저 저장</strong>한 뒤 <strong>"편집"</strong>을 다시 엽니다.</li>
+          <li><strong>"📷 사진 추가"</strong>로 여러 장 업로드. 사진 클릭 시 <strong>대표사진</strong>, ✕로 삭제.</li></ol>
+        <div class="note"><strong>공개</strong>를 끄면 손님 사이트에 그 방이 안 보입니다.</div></section>
+
+      <section class="card" id="ko-photos"><h2>🖼️ 사이트 사진</h2>
+        <p><strong>사이트 사진</strong> 탭에서 메인 슬라이드를 관리합니다.</p>
+        <ul><li><strong>메인 배경(히어로) 슬라이드</strong> — 첫 화면 배경</li><li><strong>소개 섹션 슬라이드</strong> — "소개" 부분</li></ul>
+        <p><strong>"📷 사진 추가"</strong>로 여러 장 올리면 자동으로 넘어갑니다. ✕로 삭제. 사진이 없으면 기본 배경만 보입니다.</p></section>
+
+      <section class="card" id="ko-bookings"><h2>📋 예약 관리</h2>
+        <p><strong>예약 관리</strong> 탭에서 예약을 확인·처리합니다. 새 예약이 있으면 탭에 <strong>빨간 숫자</strong>가 뜹니다.</p>
+        <h3>예약 상태</h3>
+        <ul>
+          <li><span class="tag t-pending">대기</span> 막 신청됨(미확정)</li>
+          <li><span class="tag t-confirmed">확정</span> 받아들임 → 손님에게 확정 메일</li>
+          <li><span class="tag t-rejected">불가</span> 받을 수 없음 → 손님 안내, 날짜 풀림</li>
+          <li><span class="tag t-cancelled">취소</span> 확정 후 취소 → 손님 안내, 날짜 풀림</li>
+        </ul>
+        <h3>처리 방법</h3>
+        <ol><li>각 줄의 <strong>✔ 확정 / ⊘ 불가 / ✖ 취소</strong> 버튼 사용.</li>
+          <li>상태를 바꾸면 <strong>손님·주인 모두에게 자동 이메일</strong>이 발송됩니다.</li>
+          <li>🗑로 삭제. 상단 필터로 상태별 조회.</li></ol>
+        <div class="note"><strong>불가·취소</strong>는 날짜를 다시 풀고, <strong>대기·확정</strong>만 날짜를 잡습니다. 같은 방 겹치는 날짜는 자동 차단됩니다.</div></section>
+
+      <section class="card" id="ko-settings"><h2>⚙️ 설정 — 기본 언어</h2>
+        <p><strong>설정</strong> 탭에서 <strong>손님 사이트 기본 언어</strong>를 정합니다(기본값: 영어). 🇲🇳/🇰🇷/🇬🇧 클릭 시 즉시 저장. 손님이 직접 고른 언어가 우선됩니다.</p></section>
+
+      <section class="card" id="ko-password"><h2>🔒 비밀번호</h2>
+        <ol><li>우측 <strong>"···"</strong> 메뉴 → <strong>비밀번호</strong>.</li><li>현재 → 새 비번(4자 이상) → 확인 후 저장.</li><li>다른 기기 로그인은 풀리고, 현재 창은 유지됩니다.</li></ol>
+        <div class="warn">비밀번호는 안전하게 보관하세요. 분실 시 서버 변수 <code>ADMIN_PASSWORD</code>로만 초기화됩니다.</div></section>
+
+      <section class="card" id="ko-email"><h2>✉️ 이메일 알림</h2>
+        <table class="tbl"><tr><th>상황</th><th>예약자에게</th><th>주인에게</th></tr>
+          <tr><td>예약 신청</td><td>접수 확인</td><td>신규 알림</td></tr>
+          <tr><td>확정</td><td>확정 안내</td><td>사본</td></tr>
+          <tr><td>불가</td><td>불가 안내</td><td>사본</td></tr>
+          <tr><td>취소</td><td>취소 안내</td><td>사본</td></tr></table>
+        <ul><li>예약자 메일은 <strong>손님이 고른 언어</strong>, 주인 메일은 한국어.</li>
+          <li>예약자가 답장하면 <strong>주인에게</strong>, 주인이 답장하면 예약자에게 갑니다.</li></ul>
+        <h3>메일 테스트</h3>
+        <p><strong>"···" 메뉴 → 메일 테스트</strong>로 실제 발송 후 성공/실패를 바로 확인합니다. 메일이 안 오면 여기부터 확인하세요.</p></section>
+
+      <section class="card" id="ko-faq"><h2>🛠️ 문제 해결 / FAQ</h2>
+        <h3>메일이 안 와요</h3>
+        <ol><li><strong>메일 테스트</strong> 결과를 확인.</li><li>성공인데 안 보이면 <strong>스팸함</strong> 확인.</li><li>실패면 발송 계정/비밀번호 점검.</li></ol>
+        <h3>예약·사진·설정이 사라져요</h3>
+        <p>서버 <strong>영구 저장소(볼륨)</strong>가 연결돼야 재배포 후에도 유지됩니다. 초기화되면 운영자에게 볼륨 확인을 요청하세요.</p>
+        <h3>손님이 "오류가 발생했습니다"를 봐요</h3>
+        <p>대개 오래 열어둔 화면 문제입니다. <strong>새로고침</strong>(<kbd>Ctrl</kbd>+<kbd>F5</kbd>) 후 재시도.</p>
+        <h3>기본이 영어인데 왜 한국어로 보이나요?</h3>
+        <p>그 브라우저에서 전에 한국어를 골랐기 때문입니다. 기본값은 <strong>시크릿 창</strong>으로 확인하세요.</p></section>
+    </div>
+
+    <!-- ==================== МОНГОЛ ==================== -->
+    <div data-lang-block="mn" hidden>
+      <h1>📖 ECO Guest house — Гарын авлага</h1>
+      <p class="doc-updated">ECO Guest house захиалгын сайтыг ажиллуулах заавар</p>
+      <nav class="toc"><h2>Агуулга</h2><ol>
+        <li><a href="#mn-intro">Тойм</a></li>
+        <li><a href="#mn-guest">Зочдод зориулсан</a></li>
+        <li><a href="#mn-login">Админ нэвтрэх</a></li>
+        <li><a href="#mn-rooms">Өрөө удирдах</a></li>
+        <li><a href="#mn-photos">Сайтын зураг</a></li>
+        <li><a href="#mn-bookings">Захиалга удирдах</a></li>
+        <li><a href="#mn-settings">Тохиргоо (хэл)</a></li>
+        <li><a href="#mn-password">Нууц үг</a></li>
+        <li><a href="#mn-email">Имэйл мэдэгдэл</a></li>
+        <li><a href="#mn-faq">Асуудал шийдвэрлэх / FAQ</a></li>
+      </ol></nav>
+
+      <section class="card" id="mn-intro"><h2>🌿 Тойм</h2>
+        <p>Энэ бол ECO Guest house-ийн <strong>төлбөргүй захиалгын сайт</strong>. Зочид өрөө үзээд захиалга илгээнэ; эзэн нь админ хэсгээс өрөө, зураг, захиалгыг удирдана.</p>
+        <ul><li><strong>Зочны сайт</strong>: <code>/</code></li><li><strong>Админ</strong>: <code>/admin</code></li>
+          <li><strong>3 хэл</strong>: Монгол / Солонгос / Англи (баруун дээд талд)</li>
+          <li>Төлбөр авахгүй — захиалга ирсний дараа эзэн баталгаажуулж холбогдоно.</li></ul></section>
+
+      <section class="card" id="mn-guest"><h2>🧳 Зочдод зориулсан</h2>
+        <h3>1. Захиалга хийх</h3>
+        <ol>
+          <li>Өрөөнүүдийг үзээд <strong>"Энэ өрөөг захиалах"</strong> дарна.</li>
+          <li>Маягтаас <strong>өрөө</strong> сонгоно.</li>
+          <li><strong>Хуанли</strong>-с ирэх → гарах өдрийг дарна.
+            <ul><li>Саарал/зураастай өдрүүд аль хэдийн <strong>захиалагдсан</strong>.</li><li>Өнгөрсөн өдрийг сонгох боломжгүй.</li></ul></li>
+          <li>Нэр, утас, <strong>имэйл (заавал)</strong>, зочдын тоо, (сонголт) улс, хүсэлт бөглөнө.</li>
+          <li><strong>"Захиалга илгээх"</strong> → тухайн имэйл рүү баталгаажуулах захидал очно.</li>
+        </ol>
+        <div class="note">Зочин баталгаажуулах имэйл хүлээн авах тул имэйл <strong>заавал</strong> шаардлагатай.</div>
+        <h3>2. Миний захиалга</h3>
+        <p>Дээд цэс <strong>"Захиалга шалгах"</strong> → захиалахдаа оруулсан <strong>имэйлээр</strong> захиалга ба төлвийг харна.</p>
+        <h3>3. Хэл солих</h3>
+        <p>Баруун дээд <strong>MN / KO / EN</strong>. Нэг сонгоход тухайн хөтөч дээр хадгалагдана.</p></section>
+
+      <section class="card" id="mn-login"><h2>🔑 Админ нэвтрэх</h2>
+        <ol><li><code>/admin</code> руу орно.</li><li><strong>Нууц үг</strong> оруулж нэвтэрнэ.</li><li>Таб: <strong>Өрөө · Зураг · Захиалга · Тохиргоо</strong></li></ol>
+        <div class="note">Админ дэлгэц дээр мөн MN/KO/EN байдаг (энэ нь <em>таны харах</em> хэл).</div></section>
+
+      <section class="card" id="mn-rooms"><h2>🛏️ Өрөө удирдах</h2>
+        <h3>Өрөө нэмэх / засах</h3>
+        <ol>
+          <li><strong>"+ Өрөө нэмэх"</strong> эсвэл <strong>"Засах"</strong> дарна.</li>
+          <li>Хэлний таб бүрт (🇲🇳/🇰🇷/🇬🇧) <strong>нэр, тайлбар</strong> оруулна (нэг хэл ч болно).</li>
+          <li><strong>Үнэ(₮/шөнө)</strong>, <strong>дээд тоо</strong>, <strong>харагдах эсэх</strong>-ийг тохируулна.</li>
+          <li><strong>Хадгалах</strong> — хадгалаад цонх хаагдана.</li>
+        </ol>
+        <h3>Зураг нэмэх</h3>
+        <ol><li>Шинэ өрөөг <strong>эхэлж хадгалаад</strong>, дараа нь <strong>"Засах"</strong>-аар дахин нээнэ.</li>
+          <li><strong>"📷 Зураг нэмэх"</strong>-ээр олон зураг оруулна. Зураг дарж <strong>үндсэн</strong> болгоно; ✕-ээр устгана.</li></ol>
+        <div class="note"><strong>Харагдах</strong>-ыг унтраавал тухайн өрөө зочны сайтад харагдахгүй.</div></section>
+
+      <section class="card" id="mn-photos"><h2>🖼️ Сайтын зураг</h2>
+        <p><strong>Зураг</strong> таб дээр нүүр хуудасны слайдыг удирдана.</p>
+        <ul><li><strong>Нүүр (hero) слайд</strong> — эхний дэлгэцийн дэвсгэр</li><li><strong>Танилцуулга слайд</strong> — "Танилцуулга" хэсэг</li></ul>
+        <p><strong>"📷 Зураг нэмэх"</strong>-ээр олон зураг оруулбал автоматаар солигдоно. ✕-ээр устгана. Зураггүй бол энгийн дэвсгэр харагдана.</p></section>
+
+      <section class="card" id="mn-bookings"><h2>📋 Захиалга удирдах</h2>
+        <p><strong>Захиалга</strong> таб дээр ирсэн захиалгыг харж боловсруулна. Шинэ захиалга байвал таб дээр <strong>улаан тоо</strong> гарна.</p>
+        <h3>Төлөв</h3>
+        <ul>
+          <li><span class="tag t-pending">Хүлээгдэж буй</span> сая илгээгдсэн (шийдээгүй)</li>
+          <li><span class="tag t-confirmed">Баталгаажсан</span> зөвшөөрсөн → зочинд баталгаажуулах имэйл</li>
+          <li><span class="tag t-rejected">Боломжгүй</span> авах боломжгүй → зочинд мэдэгдэнэ, огноо чөлөөлөгдөнө</li>
+          <li><span class="tag t-cancelled">Цуцалсан</span> баталгаажсаны дараа цуцалсан → мэдэгдэнэ, огноо чөлөөлөгдөнө</li>
+        </ul>
+        <h3>Боловсруулах</h3>
+        <ol><li>Мөр бүрийн <strong>✔ Батлах / ⊘ Боломжгүй / ✖ Цуцлах</strong> товч ашиглана.</li>
+          <li>Төлөв өөрчлөхөд <strong>зочин, эзэн хоёуланд автомат имэйл</strong> илгээгдэнэ.</li>
+          <li>🗑-ээр устгана. Дээд шүүлтүүрээр төлвөөр харна.</li></ol>
+        <div class="note"><strong>Боломжгүй/Цуцалсан</strong> огноог чөлөөлдөг; зөвхөн <strong>Хүлээгдэж буй/Баталгаажсан</strong> огноог барина. Нэг өрөөний давхцсан огноо автоматаар хаагдана.</div></section>
+
+      <section class="card" id="mn-settings"><h2>⚙️ Тохиргоо — үндсэн хэл</h2>
+        <p><strong>Тохиргоо</strong> таб дээр <strong>сайтын үндсэн хэл</strong>-ийг тогтооно (анхдагч: Англи). 🇲🇳/🇰🇷/🇬🇧 дарахад тэр даруй хадгална. Зочин өөрөө сонгосон хэл давамгайлна.</p></section>
+
+      <section class="card" id="mn-password"><h2>🔒 Нууц үг</h2>
+        <ol><li>Баруун <strong>"···"</strong> цэс → <strong>Нууц үг</strong>.</li><li>Одоогийн → шинэ (4+ тэмдэгт) → давтаж, хадгална.</li><li>Бусад төхөөрөмж гарна, одоогийн цонх хэвээр.</li></ol>
+        <div class="warn">Нууц үгээ найдвартай хадгал. Мартвал зөвхөн серверийн <code>ADMIN_PASSWORD</code>-оор сэргээнэ.</div></section>
+
+      <section class="card" id="mn-email"><h2>✉️ Имэйл мэдэгдэл</h2>
+        <table class="tbl"><tr><th>Үйл явдал</th><th>Зочинд</th><th>Эзэнд</th></tr>
+          <tr><td>Захиалга</td><td>Хүлээн авсан</td><td>Шинэ захиалга</td></tr>
+          <tr><td>Баталгаажсан</td><td>Баталгаа</td><td>Хуулбар</td></tr>
+          <tr><td>Боломжгүй</td><td>Мэдэгдэл</td><td>Хуулбар</td></tr>
+          <tr><td>Цуцалсан</td><td>Мэдэгдэл</td><td>Хуулбар</td></tr></table>
+        <ul><li>Зочны имэйл нь <strong>зочны сонгосон хэлээр</strong>, эзний имэйл солонгосоор.</li>
+          <li>Зочин хариу бичвэл <strong>эзэн рүү</strong>, эзэн хариу бичвэл зочин руу очно.</li></ul>
+        <h3>Имэйл тест</h3>
+        <p><strong>"···" цэс → Имэйл тест</strong> нь бодит тест илгээж, амжилт/алдааг шууд харуулна. Имэйл ирэхгүй бол эндээс эхэл.</p></section>
+
+      <section class="card" id="mn-faq"><h2>🛠️ Асуудал шийдвэрлэх / FAQ</h2>
+        <h3>Имэйл ирэхгүй байна</h3>
+        <ol><li><strong>Имэйл тест</strong>-ийн үр дүнг хар.</li><li>Амжилттай атал харагдахгүй бол <strong>спам</strong> шалга.</li><li>Амжилтгүй бол илгээгч бүртгэл/нууц үгээ шалга.</li></ol>
+        <h3>Захиалга/зураг/тохиргоо алга болдог</h3>
+        <p>Серверийн <strong>байнгын хадгалалт (volume)</strong> холбогдсон байх ёстой. Дахин суулгасны дараа алга болбол оператороос volume-ийг шалгуулна.</p>
+        <h3>Зочин "Алдаа гарлаа" гэж хардаг</h3>
+        <p>Ихэвчлэн удаан нээлттэй байсан хуудасны асуудал. <strong>Дахин ачаалаад</strong> (<kbd>Ctrl</kbd>+<kbd>F5</kbd>) дахин оролдоно.</p>
+        <h3>Үндсэн нь Англи атал би Солонгосоор харж байна</h3>
+        <p>Тэр хөтөч өмнө нь Солонгос сонгосон. Үндсэн хэлийг <strong>нууц цонхоор</strong> шалга.</p></section>
+    </div>
+  </div>
+
+  <script src="/js/i18n.js"></script>
+  <script>
+    (function () {
+      function show(l) {
+        document.querySelectorAll('[data-lang-block]').forEach((b) => {
+          b.hidden = b.dataset.langBlock !== l;
+        });
+        document.querySelectorAll('#langSwitch button').forEach((b) => {
+          b.classList.toggle('active', b.dataset.lang === l);
+        });
+        document.documentElement.lang = l;
+      }
+      document.querySelectorAll('#langSwitch button').forEach((b) =>
+        b.addEventListener('click', () => { if (window.setLang) setLang(b.dataset.lang); show(b.dataset.lang); })
+      );
+      // Initial language: explicit choice, else the admin-configured default, else English.
+      function init() {
+        show(window.getLang ? getLang() : (localStorage.getItem('lang') || 'en'));
+      }
+      if (!localStorage.getItem('lang')) {
+        fetch('/api/site-settings')
+          .then((r) => r.json())
+          .then((s) => { if (s && ['mn', 'ko', 'en'].includes(s.defaultLang)) window.SITE_DEFAULT_LANG = s.defaultLang; })
+          .catch(() => {})
+          .finally(init);
+      } else {
+        init();
+      }
+    })();
+  </script>
 </body>
 </html>
