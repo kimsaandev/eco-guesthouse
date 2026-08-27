@@ -174,9 +174,12 @@ const upload = multer({
 // ---- Middleware & static ------------------------------------------------
 app.use(express.json());
 
-// Friendly URL: /admin -> admin.html (must be before static)
+// Friendly URLs (must be before static)
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+app.get('/manual', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'manual.html'));
 });
 
 // Serve uploaded images from UPLOAD_DIR (may be a mounted volume outside public/)
