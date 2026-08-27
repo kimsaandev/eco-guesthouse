@@ -11,7 +11,9 @@ const env = (k, dflt) => {
 const SMTP_HOST = env('SMTP_HOST', 'smtp.gmail.com');
 const SMTP_PORT = env('SMTP_PORT', '465');
 const SMTP_USER = env('SMTP_USER', '');
-const SMTP_PASS = process.env.SMTP_PASS ? String(process.env.SMTP_PASS).trim() : '';
+// Strip ALL whitespace from the password: Gmail app passwords are shown as
+// "abcd efgh ijkl mnop" but must be used with no spaces.
+const SMTP_PASS = process.env.SMTP_PASS ? String(process.env.SMTP_PASS).replace(/\s+/g, '') : '';
 const MAIL_FROM = env('MAIL_FROM', '');
 const ADMIN_EMAIL = env('ADMIN_EMAIL', 'wlstks7@gmail.com');
 
