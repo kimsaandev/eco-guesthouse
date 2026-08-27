@@ -200,8 +200,11 @@ window.I18N = {
   },
 };
 
+// Site default language (English), overridable by the admin via /api/site-settings.
+// A visitor's explicit choice (localStorage) always wins over the default.
+window.SITE_DEFAULT_LANG = 'en';
 window.getLang = function () {
-  return localStorage.getItem('lang') || 'mn';
+  return localStorage.getItem('lang') || window.SITE_DEFAULT_LANG || 'en';
 };
 window.setLang = function (lang) {
   localStorage.setItem('lang', lang);

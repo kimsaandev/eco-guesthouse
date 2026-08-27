@@ -66,6 +66,7 @@ function getSettings() {
     s = { password: hashPassword(ADMIN_PASSWORD) };
     writeJson(SETTINGS_FILE, s);
   }
+  if (!['mn', 'ko', 'en'].includes(s.defaultLang)) s.defaultLang = 'en'; // default site language
   return s;
 }
 function saveSettings(s) {
@@ -200,6 +201,11 @@ app.get('/api/gallery', (req, res) => {
   res.json(getGallery());
 });
 
+// Public site settings (safe fields only — never the password)
+app.get('/api/site-settings', (req, res) => {
+  res.json({ defaultLang: getSettings().defaultLang });
+});
+
 // Public room list (active rooms only)
 app.get('/api/rooms', (req, res) => {
   const rooms = readJson(ROOMS_FILE, [])
@@ -317,6 +323,18 @@ app.post('/api/admin/login', (req, res) => {
     return res.json({ token });
   }
   res.status(401).json({ error: 'wrong_password' });
+});
+
+// Update site settings (default language)
+app.put('/api/admin/settings', requireAdmin, (req, res) => {
+  const { defaultLang } = req.body || {};
+  if (!['mn', 'ko', 'en'].includes(defaultLang)) {
+    return res.status(400).json({ error: 'invalid_lang' });
+  }
+  const settings = getSettings();
+  settings.defaultLang = defaultLang;
+  saveSettings(settings);
+  res.json({ ok: true, defaultLang });
 });
 
 // Email diagnostics: config status + send a real test to ADMIN_EMAIL

@@ -162,6 +162,18 @@
     restart();
   }
 
+  // Apply the admin-configured default language (only affects visitors who
+  // haven't picked a language themselves).
+  async function loadSiteSettings() {
+    try {
+      const s = await (await fetch('/api/site-settings')).json();
+      if (s && ['mn', 'ko', 'en'].includes(s.defaultLang)) {
+        window.SITE_DEFAULT_LANG = s.defaultLang;
+        applyI18n();
+      }
+    } catch {}
+  }
+
   async function loadGallery() {
     let g = { hero: [], about: [] };
     try {
@@ -364,6 +376,7 @@
     document.getElementById('lookupClose').addEventListener('click', closeLookup);
     document.getElementById('lookupForm').addEventListener('submit', submitLookup);
 
+    loadSiteSettings();
     setupCalendar();
     // Reload availability whenever the chosen room changes
     document.getElementById('roomSelect').addEventListener('change', (e) => {

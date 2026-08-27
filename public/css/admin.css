@@ -91,6 +91,12 @@ body.admin { background: var(--sand); }
 .upload-btn { display: inline-block; background: var(--green-light); color: var(--green-dark); padding: 9px 16px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: .9rem; margin-top: 4px; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
 
+/* Settings tab */
+.lang-choose { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+.lang-choose button { border: 1px solid var(--border); background: #fff; border-radius: 10px; padding: 10px 18px; cursor: pointer; font-size: .95rem; font-weight: 600; color: var(--muted); }
+.lang-choose button:hover { background: var(--sand); }
+.lang-choose button.active { background: var(--green); color: #fff; border-color: var(--green); }
+
 /* Gallery tab */
 .gallery-block {
   background: #fff; border: 1px solid var(--border); border-radius: var(--radius);

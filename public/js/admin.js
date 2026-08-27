@@ -177,7 +177,44 @@
       $('#tab-rooms').hidden = name !== 'rooms';
       $('#tab-gallery').hidden = name !== 'gallery';
       $('#tab-bookings').hidden = name !== 'bookings';
+      $('#tab-settings').hidden = name !== 'settings';
       if (name === 'gallery') loadGallery();
+      if (name === 'settings') loadSiteSettings();
+    })
+  );
+
+  // ---- Site settings (default language) ----
+  let siteDefaultLang = 'en';
+  async function loadSiteSettings() {
+    try {
+      const s = await (await fetch('/api/site-settings')).json();
+      if (s && ['mn', 'ko', 'en'].includes(s.defaultLang)) {
+        siteDefaultLang = s.defaultLang;
+        window.SITE_DEFAULT_LANG = s.defaultLang;
+      }
+    } catch {}
+    renderDefaultLang();
+    applyI18n();
+  }
+  function renderDefaultLang() {
+    document.querySelectorAll('#defaultLangChoose button').forEach((b) =>
+      b.classList.toggle('active', b.dataset.dl === siteDefaultLang)
+    );
+  }
+  document.querySelectorAll('#defaultLangChoose button').forEach((b) =>
+    b.addEventListener('click', async () => {
+      const dl = b.dataset.dl;
+      try {
+        const res = await api('/api/admin/settings', { method: 'PUT', body: { defaultLang: dl } });
+        if (res.ok) {
+          siteDefaultLang = dl;
+          window.SITE_DEFAULT_LANG = dl;
+          renderDefaultLang();
+          const st = $('#settingsStatus');
+          st.textContent = t('set_saved');
+          setTimeout(() => { if (st.textContent === t('set_saved')) st.textContent = ''; }, 2500);
+        }
+      } catch {}
     })
   );
 
@@ -521,6 +558,7 @@
 
   // ---- Init ----
   applyI18n();
+  loadSiteSettings();
   if (token) showDash();
   else showLogin();
 })();

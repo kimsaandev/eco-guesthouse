@@ -34,6 +34,7 @@
           <button class="tab active" data-tab="rooms" data-i18n="tab_rooms">객실 관리</button>
           <button class="tab" data-tab="gallery" data-i18n="tab_gallery">사이트 사진</button>
           <button class="tab" data-tab="bookings"><span data-i18n="tab_bookings">예약 관리</span> <span class="badge" id="pendingBadge" hidden></span></button>
+          <button class="tab" data-tab="settings" data-i18n="tab_settings">설정</button>
         </div>
         <div class="admin-header-right">
           <div class="lang-switch" id="langSwitch">
@@ -110,6 +111,23 @@
             <tbody id="bookingsBody"></tbody>
           </table>
           <p id="noBookings" class="muted empty" data-i18n="bookings_empty" hidden>예약이 없습니다.</p>
+        </div>
+      </section>
+
+      <!-- Settings tab -->
+      <section id="tab-settings" hidden>
+        <div class="tab-head">
+          <h2 data-i18n="tab_settings">설정</h2>
+        </div>
+        <div class="gallery-block">
+          <h3 data-i18n="set_default_lang">손님 사이트 기본 언어</h3>
+          <p class="muted" data-i18n="set_default_lang_desc">처음 방문하는 손님에게 기본으로 보여줄 언어입니다.</p>
+          <div class="lang-choose" id="defaultLangChoose">
+            <button type="button" data-dl="mn">🇲🇳 Монгол</button>
+            <button type="button" data-dl="ko">🇰🇷 한국어</button>
+            <button type="button" data-dl="en">🇬🇧 English</button>
+          </div>
+          <span class="muted gallery-status" id="settingsStatus"></span>
         </div>
       </section>
     </main>
