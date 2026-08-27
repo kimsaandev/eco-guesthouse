@@ -61,7 +61,7 @@ const GUEST = {
       heading: 'Захиалга цуцлагдлаа',
       intro: 'Таны захиалга цуцлагдсан. Асуулт байвал бидэнтэй холбогдоно уу.',
     },
-    labels: { room: 'Өрөө', checkin: 'Ирэх', checkout: 'Гарах', guests: 'Зочид', name: 'Нэр', phone: 'Утас' },
+    labels: { room: 'Өрөө', checkin: 'Ирэх', checkout: 'Гарах', guests: 'Зочид', country: 'Улс', name: 'Нэр', phone: 'Утас' },
   },
   ko: {
     created: {
@@ -84,7 +84,7 @@ const GUEST = {
       heading: '예약이 취소되었습니다',
       intro: '예약이 취소되었습니다. 문의사항이 있으면 연락 주세요.',
     },
-    labels: { room: '객실', checkin: '체크인', checkout: '체크아웃', guests: '인원', name: '이름', phone: '연락처' },
+    labels: { room: '객실', checkin: '체크인', checkout: '체크아웃', guests: '인원', country: '국가', name: '이름', phone: '연락처' },
   },
   en: {
     created: {
@@ -107,7 +107,7 @@ const GUEST = {
       heading: 'Booking cancelled',
       intro: 'Your booking has been cancelled. Please contact us if you have any questions.',
     },
-    labels: { room: 'Room', checkin: 'Check-in', checkout: 'Check-out', guests: 'Guests', name: 'Name', phone: 'Phone' },
+    labels: { room: 'Room', checkin: 'Check-in', checkout: 'Check-out', guests: 'Guests', country: 'Country', name: 'Name', phone: 'Phone' },
   },
 };
 
@@ -128,6 +128,7 @@ function detailsTable(labels, booking, roomName) {
     [labels.name, booking.name],
     [labels.phone, booking.phone],
   ];
+  if (booking.country) rows.splice(4, 0, [labels.country || 'Country', booking.country]);
   return `<table style="border-collapse:collapse;margin:16px 0;font-size:15px;">${rows
     .map(
       ([k, v]) =>

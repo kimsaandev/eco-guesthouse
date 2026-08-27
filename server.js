@@ -221,7 +221,7 @@ function isBlocking(status) {
 
 // Create a booking request (no payment)
 app.post('/api/bookings', (req, res) => {
-  const { roomId, name, phone, email, checkIn, checkOut, guests, message, lang } = req.body || {};
+  const { roomId, name, phone, email, checkIn, checkOut, guests, message, lang, country } = req.body || {};
 
   if (!roomId || !name || !phone || !email || !checkIn || !checkOut) {
     return res.status(400).json({ error: 'missing_fields' });
@@ -258,6 +258,7 @@ app.post('/api/bookings', (req, res) => {
     checkIn,
     checkOut,
     guests: g,
+    country: String(country || '').slice(0, 80),
     message: String(message || '').slice(0, 1000),
     lang: ['mn', 'ko', 'en'].includes(lang) ? lang : 'en',
     status: 'pending',
@@ -269,6 +270,31 @@ app.post('/api/bookings', (req, res) => {
 
   // Notify guest + admin (fire-and-forget; never blocks the response)
   mailer.sendBookingCreated(booking, room.name).catch((e) => console.error('[mail]', e.message));
+});
+
+// Guest booking lookup by email — returns that email's bookings + status.
+app.post('/api/bookings/lookup', (req, res) => {
+  const email = String((req.body && req.body.email) || '').trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ error: 'invalid_email' });
+  }
+  const rooms = readJson(ROOMS_FILE, []);
+  const roomName = (id) => {
+    const r = rooms.find((x) => x.id === id);
+    return r ? r.name : null;
+  };
+  const bookings = readJson(BOOKINGS_FILE, [])
+    .filter((b) => String(b.email || '').toLowerCase() === email)
+    .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1)) // newest first
+    .map((b) => ({
+      id: b.id,
+      roomName: roomName(b.roomId),
+      checkIn: b.checkIn,
+      checkOut: b.checkOut,
+      guests: b.guests,
+      status: b.status,
+    }));
+  res.json({ bookings });
 });
 
 // Booked date ranges for a room (so the site can block unavailable dates)

@@ -280,6 +280,62 @@
     document.getElementById('successModal').hidden = true;
   }
 
+  // ---- Booking lookup ----
+  function localizeName(nameObj) {
+    const lang = getLang();
+    return (nameObj && (nameObj[lang] || nameObj.en || nameObj.ko || nameObj.mn)) || '—';
+  }
+  function openLookup() {
+    document.getElementById('lookupResults').innerHTML = '';
+    document.getElementById('lookupError').textContent = '';
+    document.getElementById('lookupModal').hidden = false;
+  }
+  function closeLookup() {
+    document.getElementById('lookupModal').hidden = true;
+  }
+  function renderLookup(bookings) {
+    const box = document.getElementById('lookupResults');
+    if (!bookings.length) {
+      box.innerHTML = `<p class="lookup-none">${t('lookup_none')}</p>`;
+      return;
+    }
+    box.innerHTML = bookings
+      .map(
+        (b) => `
+      <div class="lk-item">
+        <div class="lk-top">
+          <span class="lk-room">${escapeHtml(localizeName(b.roomName))}</span>
+          <span class="lk-status st-${b.status}">${t('lst_' + b.status)}</span>
+        </div>
+        <div class="lk-dates">${b.checkIn} → ${b.checkOut} · 👤 ${b.guests}${t('lookup_guests')}</div>
+      </div>`
+      )
+      .join('');
+  }
+  async function submitLookup(e) {
+    e.preventDefault();
+    const errEl = document.getElementById('lookupError');
+    errEl.textContent = '';
+    document.getElementById('lookupResults').innerHTML = '';
+    const email = document.getElementById('lookupEmail').value.trim();
+    try {
+      const res = await fetch('/api/bookings/lookup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        const j = await res.json();
+        renderLookup(j.bookings || []);
+      } else {
+        const j = await res.json().catch(() => ({}));
+        errEl.textContent = t(j.error === 'invalid_email' ? 'err_email' : 'err_generic');
+      }
+    } catch {
+      errEl.textContent = t('err_generic');
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -299,6 +355,14 @@
 
     document.getElementById('bookingForm').addEventListener('submit', submitBooking);
     document.getElementById('modalClose').addEventListener('click', closeModal);
+
+    document.getElementById('lookupLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('nav').classList.remove('open');
+      openLookup();
+    });
+    document.getElementById('lookupClose').addEventListener('click', closeLookup);
+    document.getElementById('lookupForm').addEventListener('submit', submitLookup);
 
     setupCalendar();
     // Reload availability whenever the chosen room changes

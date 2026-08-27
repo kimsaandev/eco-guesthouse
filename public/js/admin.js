@@ -468,7 +468,7 @@
       <tr>
         <td><span class="status-pill status-${b.status}">${statusLabel(b.status)}</span></td>
         <td>${esc(roomNameById(b.roomId))}</td>
-        <td>${esc(b.name)}</td>
+        <td>${esc(b.name)}${b.country ? '<br><small style="color:var(--muted)">🌍 ' + esc(b.country) + '</small>' : ''}</td>
         <td>${esc(b.phone)}${b.email ? '<br><small>' + esc(b.email) + '</small>' : ''}</td>
         <td>${b.checkIn}</td>
         <td>${b.checkOut}</td>

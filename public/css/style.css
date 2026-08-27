@@ -193,6 +193,25 @@ img { max-width: 100%; display: block; }
 .site-footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
 .site-footer a { color: #fff; opacity: .8; }
 
+/* Booking lookup modal */
+.lookup-box { position: relative; max-width: 460px; text-align: left; width: 100%; }
+.lookup-box h3 { color: var(--green-dark); }
+.modal-x { position: absolute; top: 12px; right: 14px; background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--muted); line-height: 1; }
+.lookup-form { display: flex; gap: 8px; margin: 14px 0 6px; }
+.lookup-form input { flex: 1; padding: 11px 13px; border: 1px solid var(--border); border-radius: 10px; font-size: 1rem; font-family: inherit; }
+.lookup-form input:focus { outline: 2px solid var(--green-light); border-color: var(--green); }
+.lookup-results { margin-top: 10px; max-height: 50vh; overflow-y: auto; }
+.lookup-none { color: var(--muted); text-align: center; padding: 18px 0; }
+.lk-item { border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
+.lk-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.lk-room { font-weight: 700; color: var(--ink); }
+.lk-dates { color: var(--muted); font-size: .9rem; margin-top: 5px; }
+.lk-status { font-size: .78rem; font-weight: 700; padding: 3px 11px; border-radius: 999px; white-space: nowrap; }
+.st-pending { background: #fff3d6; color: #9a6b00; }
+.st-confirmed { background: #e4f5ea; color: #1f7a45; }
+.st-rejected { background: #ede8f3; color: #6a4a9a; }
+.st-cancelled { background: #f3e2e2; color: #a33; }
+
 /* Modal */
 .modal { position: fixed; inset: 0; background: rgba(20,35,28,.55); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
 .modal[hidden] { display: none; }
