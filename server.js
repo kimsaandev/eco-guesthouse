@@ -293,6 +293,15 @@ app.post('/api/admin/login', (req, res) => {
   res.status(401).json({ error: 'wrong_password' });
 });
 
+// Email diagnostics: config status + send a real test to ADMIN_EMAIL
+app.get('/api/admin/mail-config', requireAdmin, (req, res) => {
+  res.json(mailer.config());
+});
+app.post('/api/admin/mail-test', requireAdmin, async (req, res) => {
+  const result = await mailer.sendTest();
+  res.status(result.ok ? 200 : 500).json(result);
+});
+
 // Change the admin password (requires the current password)
 app.post('/api/admin/password', requireAdmin, (req, res) => {
   const { currentPassword, newPassword } = req.body || {};

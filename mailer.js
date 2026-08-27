@@ -200,4 +200,29 @@ async function sendStatusUpdate(booking, roomNameObj, status) {
   await send(ADMIN_EMAIL, `[예약 ${STATUS_KO[status] || status}] ${adminRoom} · ${booking.checkIn}~${booking.checkOut} · ${booking.name}`, wrap(`예약 상태 변경: ${STATUS_KO[status] || status}`, adminBody), booking.email);
 }
 
-module.exports = { sendBookingCreated, sendStatusUpdate, mailEnabled: () => !!transporter };
+// Diagnostics: current mail config (no secrets) + a real test send.
+function config() {
+  return { enabled: !!transporter, host: SMTP_HOST, port: Number(SMTP_PORT), from: FROM, admin: ADMIN_EMAIL };
+}
+async function sendTest(to) {
+  if (!transporter) {
+    return { ok: false, error: 'SMTP not configured (set SMTP_USER / SMTP_PASS)' };
+  }
+  const target = to || ADMIN_EMAIL;
+  try {
+    await transporter.sendMail({
+      from: FROM,
+      to: target,
+      subject: 'ECO Guest house — 메일 테스트 / Email test',
+      html: wrap(
+        '메일 테스트 / Email test',
+        '<p style="font-size:15px;line-height:1.6;">이 메일이 보이면 예약 알림 이메일이 정상 작동합니다.<br>If you can read this, booking-notification emails are working.</p>'
+      ),
+    });
+    return { ok: true, to: target };
+  } catch (err) {
+    return { ok: false, error: err.message };
+  }
+}
+
+module.exports = { sendBookingCreated, sendStatusUpdate, mailEnabled: () => !!transporter, config, sendTest };

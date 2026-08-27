@@ -114,6 +114,27 @@
     logout();
   });
 
+  // ---- Email test ----
+  $('#mailTestBtn').addEventListener('click', async () => {
+    const btn = $('#mailTestBtn');
+    btn.disabled = true;
+    try {
+      const res = await api('/api/admin/mail-test', { method: 'POST' });
+      const j = await res.json().catch(() => ({}));
+      if (res.ok && j.ok) {
+        alert(t('mail_test_ok', { to: j.to }));
+      } else if (j.error && /not configured/i.test(j.error)) {
+        alert(t('mail_test_disabled'));
+      } else {
+        alert(t('mail_test_fail', { err: j.error || 'unknown' }));
+      }
+    } catch {
+      alert(t('mail_test_fail', { err: 'network' }));
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
   // ---- Change password ----
   $('#pwBtn').addEventListener('click', () => {
     $('#pwForm').reset();
