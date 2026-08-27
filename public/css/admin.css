@@ -16,12 +16,30 @@ body.admin { background: var(--sand); }
 .admin-header { background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 40; }
 .admin-header-inner { display: flex; align-items: center; gap: 18px; height: 62px; }
 .admin-header .brand { color: var(--green-dark); font-weight: 800; }
-.admin-tabs { display: flex; gap: 6px; margin-left: 10px; }
-.tab { background: none; border: none; padding: 9px 16px; border-radius: 10px; cursor: pointer; font-weight: 600; color: var(--muted); font-size: .95rem; }
+.admin-tabs { display: flex; gap: 4px; margin-left: 10px; }
+.tab { background: none; border: none; padding: 9px 14px; border-radius: 10px; cursor: pointer; font-weight: 600; color: var(--muted); font-size: .95rem; white-space: nowrap; }
 .tab.active { background: var(--green-light); color: var(--green-dark); }
 .badge { background: #d9534f; color: #fff; border-radius: 999px; padding: 1px 8px; font-size: .75rem; margin-left: 2px; }
-.admin-header-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
-.muted-link { color: var(--muted); font-size: .9rem; }
+.admin-header-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.muted-link { color: var(--muted); font-size: .9rem; white-space: nowrap; }
+
+/* Overflow "more" menu */
+.menu-wrap { position: relative; }
+.menu-btn { padding: 6px 12px; font-size: 1.1rem; line-height: 1; }
+.menu-dropdown {
+  position: absolute; right: 0; top: calc(100% + 8px); z-index: 60;
+  background: #fff; border: 1px solid var(--border); border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(30,60,45,.16); padding: 6px; min-width: 190px;
+  display: flex; flex-direction: column;
+}
+.menu-dropdown[hidden] { display: none; }
+.menu-dropdown a, .menu-dropdown button {
+  text-align: left; background: none; border: none; padding: 10px 14px; border-radius: 8px;
+  cursor: pointer; font-size: .95rem; color: var(--ink); font-family: inherit;
+  text-decoration: none; white-space: nowrap;
+}
+.menu-dropdown a:hover, .menu-dropdown button:hover { background: var(--sand); }
+.menu-sep { height: 1px; background: var(--border); margin: 5px 4px; }
 
 .admin-main { padding: 30px 20px 60px; }
 .tab-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; flex-wrap: wrap; gap: 12px; }
@@ -106,8 +124,13 @@ body.admin { background: var(--sand); }
 .gallery-block .photo-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); margin-bottom: 14px; }
 .gallery-status { margin-left: 10px; }
 
+@media (max-width: 760px) {
+  .admin-header-inner { height: auto; min-height: 56px; padding: 8px 0; flex-wrap: wrap; gap: 8px 12px; }
+  .admin-tabs { order: 3; width: 100%; margin-left: 0; overflow-x: auto; }
+  .admin-tabs .tab { padding: 8px 12px; font-size: .9rem; }
+  .admin-header-right { margin-left: auto; }
+}
 @media (max-width: 640px) {
   .admin-room { flex-wrap: wrap; }
   .admin-room .actions { width: 100%; }
-  .admin-tabs .tab { padding: 8px 10px; font-size: .85rem; }
 }

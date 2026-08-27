@@ -114,6 +114,20 @@
     logout();
   });
 
+  // ---- Header "more" dropdown ----
+  const moreBtn = $('#moreBtn');
+  const moreMenu = $('#moreMenu');
+  moreBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    moreMenu.hidden = !moreMenu.hidden;
+  });
+  moreMenu.addEventListener('click', () => { moreMenu.hidden = true; });
+  document.addEventListener('click', (e) => {
+    if (!moreMenu.hidden && !moreMenu.contains(e.target) && e.target !== moreBtn) {
+      moreMenu.hidden = true;
+    }
+  });
+
   // ---- Email test ----
   $('#mailTestBtn').addEventListener('click', async () => {
     const btn = $('#mailTestBtn');
